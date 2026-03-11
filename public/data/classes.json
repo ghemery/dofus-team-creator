@@ -2,9 +2,11 @@
   {
     "id": "cra",
     "name": "Cra",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/9.jpg",
     "color": "#4CAF50",
-    "incompatibleWith": [],
+    "incompatibleWith": [
+      "eliotrope"
+    ],
     "stats": {
       "aoesDamage": 5,
       "singleTargetDamage": 9,
@@ -23,7 +25,7 @@
   {
     "id": "ecaflip",
     "name": "Ecaflip",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/6.jpg",
     "color": "#FF9800",
     "incompatibleWith": [],
     "stats": {
@@ -44,7 +46,7 @@
   {
     "id": "eniripsa",
     "name": "Eniripsa",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/7.jpg",
     "color": "#E91E63",
     "incompatibleWith": [],
     "stats": {
@@ -53,7 +55,7 @@
       "mpRemoval": 0,
       "shield": 5,
       "enemyDamageReduction": 3,
-      "lifeSteal": 0,
+      "lifeSteal": 6,
       "healing": 10,
       "mobility": 3,
       "rangeDamage": 4,
@@ -65,19 +67,19 @@
   {
     "id": "enutrof",
     "name": "Enutrof",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/3.jpg",
     "color": "#FFD700",
     "incompatibleWith": [],
     "stats": {
       "aoesDamage": 3,
       "singleTargetDamage": 6,
-      "mpRemoval": 8,
+      "mpRemoval": 10,
       "shield": 0,
       "enemyDamageReduction": 2,
-      "lifeSteal": 0,
+      "lifeSteal": 3,
       "healing": 2,
       "mobility": 2,
-      "rangeDamage": 5,
+      "rangeDamage": 6,
       "midRangeDamage": 4,
       "meleeDamage": 3,
       "tankiness": 2
@@ -86,13 +88,13 @@
   {
     "id": "feca",
     "name": "Féca",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/1.jpg",
     "color": "#2196F3",
     "incompatibleWith": [],
     "stats": {
       "aoesDamage": 3,
       "singleTargetDamage": 5,
-      "mpRemoval": 4,
+      "mpRemoval": 7,
       "shield": 9,
       "enemyDamageReduction": 8,
       "lifeSteal": 0,
@@ -101,13 +103,13 @@
       "rangeDamage": 3,
       "midRangeDamage": 3,
       "meleeDamage": 2,
-      "tankiness": 7
+      "tankiness": 6
     }
   },
   {
     "id": "iop",
     "name": "Iop",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/8.jpg",
     "color": "#F44336",
     "incompatibleWith": [],
     "stats": {
@@ -122,13 +124,13 @@
       "rangeDamage": 1,
       "midRangeDamage": 5,
       "meleeDamage": 10,
-      "tankiness": 4
+      "tankiness": 3
     }
   },
   {
     "id": "osamodas",
     "name": "Osamodas",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/2.jpg",
     "color": "#795548",
     "incompatibleWith": [],
     "stats": {
@@ -149,28 +151,28 @@
   {
     "id": "pandawa",
     "name": "Pandawa",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/12.jpg",
     "color": "#9C27B0",
     "incompatibleWith": [],
     "stats": {
-      "aoesDamage": 7,
+      "aoesDamage": 5,
       "singleTargetDamage": 5,
-      "mpRemoval": 5,
+      "mpRemoval": 3,
       "shield": 2,
       "enemyDamageReduction": 0,
-      "lifeSteal": 0,
-      "healing": 4,
+      "lifeSteal": 2,
+      "healing": 3,
       "mobility": 6,
       "rangeDamage": 2,
       "midRangeDamage": 5,
       "meleeDamage": 6,
-      "tankiness": 3
+      "tankiness": 10
     }
   },
   {
     "id": "sacrier",
-    "name": "Sacrier",
-    "logoUrl": "",
+    "name": "Sacrieur",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/11.jpg",
     "color": "#FF5722",
     "incompatibleWith": [],
     "stats": {
@@ -191,7 +193,7 @@
   {
     "id": "sadida",
     "name": "Sadida",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/10.jpg",
     "color": "#4CAF50",
     "incompatibleWith": [],
     "stats": {
@@ -212,7 +214,7 @@
   {
     "id": "sram",
     "name": "Sram",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/4.jpg",
     "color": "#607D8B",
     "incompatibleWith": [],
     "stats": {
@@ -233,28 +235,28 @@
   {
     "id": "xelor",
     "name": "Xélor",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/5.jpg",
     "color": "#673AB7",
     "incompatibleWith": [],
     "stats": {
-      "aoesDamage": 6,
+      "aoesDamage": 5,
       "singleTargetDamage": 8,
-      "mpRemoval": 10,
+      "mpRemoval": 2,
       "shield": 0,
       "enemyDamageReduction": 2,
       "lifeSteal": 0,
       "healing": 0,
-      "mobility": 5,
-      "rangeDamage": 8,
-      "midRangeDamage": 5,
-      "meleeDamage": 1,
+      "mobility": 6,
+      "rangeDamage": 5,
+      "midRangeDamage": 7,
+      "meleeDamage": 6,
       "tankiness": 1
     }
   },
   {
     "id": "roublard",
     "name": "Roublard",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/13.jpg",
     "color": "#FF6B35",
     "incompatibleWith": [],
     "stats": {
@@ -275,7 +277,7 @@
   {
     "id": "zobal",
     "name": "Zobal",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/14.jpg",
     "color": "#00BCD4",
     "incompatibleWith": [],
     "stats": {
@@ -296,7 +298,7 @@
   {
     "id": "steamer",
     "name": "Steamer",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/15.jpg",
     "color": "#78909C",
     "incompatibleWith": [],
     "stats": {
@@ -317,7 +319,7 @@
   {
     "id": "eliotrope",
     "name": "Eliotrope",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/16.jpg",
     "color": "#3F51B5",
     "incompatibleWith": [],
     "stats": {
@@ -338,28 +340,28 @@
   {
     "id": "huppermage",
     "name": "Huppermage",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/17.jpg",
     "color": "#CDDC39",
     "incompatibleWith": [],
     "stats": {
-      "aoesDamage": 8,
+      "aoesDamage": 6,
       "singleTargetDamage": 8,
       "mpRemoval": 3,
       "shield": 3,
       "enemyDamageReduction": 2,
-      "lifeSteal": 0,
-      "healing": 0,
+      "lifeSteal": 4,
+      "healing": 2,
       "mobility": 6,
-      "rangeDamage": 7,
+      "rangeDamage": 8,
       "midRangeDamage": 8,
-      "meleeDamage": 4,
-      "tankiness": 2
+      "meleeDamage": 6,
+      "tankiness": 5
     }
   },
   {
     "id": "ouginak",
     "name": "Ouginak",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/18.jpg",
     "color": "#8BC34A",
     "incompatibleWith": [],
     "stats": {
@@ -380,7 +382,7 @@
   {
     "id": "forgelance",
     "name": "Forgelance",
-    "logoUrl": "",
+    "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/20.jpg",
     "color": "#9E9E9E",
     "incompatibleWith": [],
     "stats": {

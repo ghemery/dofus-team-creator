@@ -1,69 +1,80 @@
 export interface ClassStats {
-  aoesDamage: number;          // Dégâts zone
-  singleTargetDamage: number;  // Gros dégâts monocible
-  mpRemoval: number;           // Retrait PM
-  shield: number;              // Shield
-  enemyDamageReduction: number; // Réduction dégâts ennemis
-  lifeSteal: number;           // Vol de vie
-  healing: number;             // Soin
-  mobility: number;            // Mobilité
-  rangeDamage: number;         // Dégâts distance
-  midRangeDamage: number;      // Dégâts mi-distance
-  meleeDamage: number;         // Dégâts CAC
-  tankiness: number;           // Gros tank
+  aoesDamage: number;
+  singleTargetDamage: number;
+  mpRemoval: number;
+  shield: number;
+  enemyDamageReduction: number;
+  lifeSteal: number;
+  healing: number;
+  mobility: number;
+  rangeDamage: number;
+  midRangeDamage: number;
+  meleeDamage: number;
+  tankiness: number;
 }
 
 export interface DofusClass {
   id: string;
   name: string;
   logoUrl: string;
-  color: string;             // Class accent color
-  incompatibleWith: string[]; // Array of class IDs
+  color: string;
+  incompatibleWith: string[];
   stats: ClassStats;
 }
 
-export type RoleType = 'dps1' | 'dps2' | 'tank' | 'support';
+export type RoleType = 'tank' | 'soutienPolyvalent' | 'dpt' | 'dpt2';
 
 export interface TeamRoles {
-  dps1: string | null;   // class ID or null
-  dps2: string | null;
   tank: string | null;
-  support: string | null;
+  soutienPolyvalent: string | null;
+  dpt: string | null;
+  dpt2: string | null;
+}
+
+export interface TeamComment {
+  description: string;
+  strengths: string;
+  weaknesses: string;
 }
 
 export interface SavedTeam {
   id: string;
   roles: TeamRoles;
+  patch: string;
+  comment: TeamComment;
   autoScore: number;
-  userRatings: number[];    // stored in localStorage
+  userRatings: number[];
   createdAt: number;
   name?: string;
 }
 
 export type Tier = 'S' | 'A' | 'B' | 'C';
 
-export interface TeamWithTier extends SavedTeam {
-  tier: Tier;
-  finalScore: number;
-  averageUserRating: number | null;
-}
+export const CURRENT_PATCH = '3.5';
 
-export interface AdminPassword {
-  hash: string;
-}
+export const AVAILABLE_PATCHES = ['3.5', '3.4', '3.3', '3.2', '3.1', '3.0'];
+
+export const ROLE_ORDER: RoleType[] = ['tank', 'soutienPolyvalent', 'dpt', 'dpt2'];
 
 export const ROLE_LABELS: Record<RoleType, string> = {
-  dps1: 'DPS 1',
-  dps2: 'DPS 2',
   tank: 'Tank',
-  support: 'Support',
+  soutienPolyvalent: 'Soutien polyvalent',
+  dpt: 'DPT',
+  dpt2: 'DPT2 ou hybride DPT/soutien',
+};
+
+export const ROLE_LABELS_SHORT: Record<RoleType, string> = {
+  tank: 'Tank',
+  soutienPolyvalent: 'Soutien',
+  dpt: 'DPT',
+  dpt2: 'DPT2/Hybride',
 };
 
 export const ROLE_COLORS: Record<RoleType, string> = {
-  dps1: '#ff6b6b',
-  dps2: '#ff9f43',
   tank: '#48dbfb',
-  support: '#1dd1a1',
+  soutienPolyvalent: '#1dd1a1',
+  dpt: '#ff6b6b',
+  dpt2: '#ff9f43',
 };
 
 export const STAT_LABELS: Record<keyof ClassStats, string> = {
@@ -102,3 +113,9 @@ export function getTier(score: number): Tier {
   if (score >= 5) return 'B';
   return 'C';
 }
+
+export const EMPTY_COMMENT: TeamComment = {
+  description: '',
+  strengths: '',
+  weaknesses: '',
+};

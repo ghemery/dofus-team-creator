@@ -1,8 +1,8 @@
-import { DofusClass, SavedTeam, TeamRoles } from '../types';
+import { DofusClass, SavedTeam, TeamRoles, TeamComment, CURRENT_PATCH, EMPTY_COMMENT } from '../types';
 
 const BASE_URL = import.meta.env.BASE_URL;
 
-// ─── Classes (loaded from public JSON) ──────────────────────────────────────
+// ─── Classes ─────────────────────────────────────────────────────────────────
 
 let cachedClasses: DofusClass[] | null = null;
 
@@ -15,8 +15,6 @@ export async function loadClasses(): Promise<DofusClass[]> {
 }
 
 export function saveClassesToStorage(classes: DofusClass[]): void {
-  // In production (GitHub Pages), admin downloads the JSON and commits it.
-  // This saves locally for the current session.
   cachedClasses = classes;
   localStorage.setItem('dofus_classes_override', JSON.stringify(classes));
 }
@@ -36,9 +34,22 @@ export function exportClassesJson(classes: DofusClass[]): void {
   URL.revokeObjectURL(url);
 }
 
-// ─── Teams (localStorage) ───────────────────────────────────────────────────
+// ─── Default teams ────────────────────────────────────────────────────────────
+
+async function loadDefaultTeams(): Promise<SavedTeam[]> {
+  try {
+    const resp = await fetch(`${BASE_URL}data/defaultTeams.json`);
+    if (!resp.ok) return [];
+    return await resp.json() as SavedTeam[];
+  } catch {
+    return [];
+  }
+}
+
+// ─── Teams (localStorage) ─────────────────────────────────────────────────────
 
 const TEAMS_KEY = 'dofus_teams';
+const DEFAULTS_LOADED_KEY = 'dofus_defaults_loaded';
 
 export function loadTeams(): SavedTeam[] {
   const raw = localStorage.getItem(TEAMS_KEY);
@@ -49,11 +60,30 @@ function persistTeams(teams: SavedTeam[]): void {
   localStorage.setItem(TEAMS_KEY, JSON.stringify(teams));
 }
 
-export function saveTeam(roles: TeamRoles, autoScore: number, name?: string): SavedTeam {
+export async function initDefaultTeams(): Promise<void> {
+  if (localStorage.getItem(DEFAULTS_LOADED_KEY)) return;
+  const defaults = await loadDefaultTeams();
+  if (defaults.length === 0) return;
+  const existing = loadTeams();
+  if (existing.length === 0) {
+    persistTeams(defaults);
+  }
+  localStorage.setItem(DEFAULTS_LOADED_KEY, '1');
+}
+
+export function saveTeam(
+  roles: TeamRoles,
+  autoScore: number,
+  patch: string = CURRENT_PATCH,
+  comment: TeamComment = EMPTY_COMMENT,
+  name?: string,
+): SavedTeam {
   const teams = loadTeams();
   const team: SavedTeam = {
     id: Date.now().toString(),
     roles,
+    patch,
+    comment,
     autoScore,
     userRatings: [],
     createdAt: Date.now(),
@@ -68,7 +98,6 @@ export function rateTeam(teamId: string, rating: number): void {
   const teams = loadTeams();
   const team = teams.find(t => t.id === teamId);
   if (!team) return;
-  // Each user can only rate once per team (tracked by localStorage)
   const ratedKey = `rated_${teamId}`;
   if (localStorage.getItem(ratedKey)) return;
   team.userRatings.push(rating);
@@ -85,7 +114,7 @@ export function deleteTeam(teamId: string): void {
   persistTeams(teams);
 }
 
-// ─── Admin password ─────────────────────────────────────────────────────────
+// ─── Admin password ───────────────────────────────────────────────────────────
 
 const ADMIN_KEY = 'dofus_admin_pwd';
 const DEFAULT_ADMIN_PASSWORD = 'admin1234';

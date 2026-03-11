@@ -1,4 +1,5 @@
-import type { DofusClass } from '../types';
+import { useState } from 'react';
+import { DofusClass } from '../types';
 
 interface ClassLogoProps {
   dofusClass: DofusClass;
@@ -17,12 +18,16 @@ export function ClassLogo({
   showName = false,
   disabled = false,
 }: ClassLogoProps) {
+  const [imgError, setImgError] = useState(false);
+
   const initials = dofusClass.name
     .split(' ')
     .map(w => w[0])
     .join('')
     .toUpperCase()
     .slice(0, 3);
+
+  const showImage = dofusClass.logoUrl && !imgError;
 
   return (
     <div
@@ -57,14 +62,13 @@ export function ClassLogo({
           overflow: 'hidden',
         }}
       >
-        {dofusClass.logoUrl ? (
+        {showImage ? (
           <img
             src={dofusClass.logoUrl}
             alt={dofusClass.name}
-            style={{ width: '80%', height: '80%', objectFit: 'contain' }}
-            onError={e => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
+            style={{ width: '85%', height: '85%', objectFit: 'cover', borderRadius: '50%' }}
+            onError={() => setImgError(true)}
+            onLoad={() => setImgError(false)}
           />
         ) : (
           <span

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(cd C:/laragon/www/dofus-team-creator && npm install && npm run dev)",
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}

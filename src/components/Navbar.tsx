@@ -14,8 +14,8 @@ export function Navbar() {
         <div style={{ display: 'flex', gap: '0.25rem', marginLeft: 'auto' }}>
           {[
             { to: '/', label: '🛠️ Builder' },
-            { to: '/suggestions', label: '💡 Suggestions' },
             { to: '/tierlist', label: '🏆 Tier List' },
+            { to: '/classement', label: '📊 Classement' },
             { to: '/admin', label: '⚙️ Admin' },
           ].map(({ to, label }) => (
             <NavLink

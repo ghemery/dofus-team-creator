@@ -82,7 +82,7 @@ export const STAT_LABELS: Record<keyof ClassStats, string> = {
   singleTargetDamage: 'Dégâts monocible',
   mpRemoval: 'Retrait PM',
   shield: 'Shield',
-  enemyDamageReduction: 'Réduction dégâts',
+  enemyDamageReduction: 'Armure',
   lifeSteal: 'Vol de vie',
   healing: 'Soins',
   mobility: 'Mobilité',

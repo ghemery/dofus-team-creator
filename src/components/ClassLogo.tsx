@@ -66,6 +66,7 @@ export function ClassLogo({
           <img
             src={dofusClass.logoUrl}
             alt={dofusClass.name}
+            referrerPolicy="no-referrer"
             style={{ width: '85%', height: '85%', objectFit: 'cover', borderRadius: '50%' }}
             onError={() => setImgError(true)}
             onLoad={() => setImgError(false)}

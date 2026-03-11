@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { BuilderPage } from './pages/BuilderPage';
-import { SuggestionsPage } from './pages/SuggestionsPage';
 import { TierListPage } from './pages/TierListPage';
+import { RankingPage } from './pages/RankingPage';
 import { AdminPage } from './pages/AdminPage';
 
 function App() {
@@ -13,8 +13,8 @@ function App() {
         <main style={{ flex: 1, paddingBottom: '3rem' }}>
           <Routes>
             <Route path="/" element={<BuilderPage />} />
-            <Route path="/suggestions" element={<SuggestionsPage />} />
             <Route path="/tierlist" element={<TierListPage />} />
+            <Route path="/classement" element={<RankingPage />} />
             <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </main>

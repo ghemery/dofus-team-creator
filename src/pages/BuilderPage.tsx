@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TeamRoles, RoleType, ROLE_ORDER, ROLE_LABELS, AVAILABLE_PATCHES, CURRENT_PATCH, TeamComment, EMPTY_COMMENT, STAT_LABELS, STAT_ICONS } from '../types';
+import { TeamRoles, RoleType, ROLE_ORDER, ROLE_LABELS, ROLE_LABELS_SHORT, AVAILABLE_PATCHES, CURRENT_PATCH, TeamComment, EMPTY_COMMENT, STAT_LABELS, STAT_ICONS } from '../types';
 import { useClasses } from '../hooks/useClasses';
 import { useTeams } from '../hooks/useTeams';
-import { computeAutoScore } from '../lib/scoring';
+import { computeTeamDetails, getDamageVolumeStyle, getDamageLevelStyle } from '../lib/scoring';
 import { RoleSlot } from '../components/RoleSlot';
 import { ScoreBar, StatGrid } from '../components/ScoreBar';
 import { ClassLogo } from '../components/ClassLogo';
@@ -29,7 +29,8 @@ export function BuilderPage() {
   const [showComment, setShowComment] = useState(false);
 
   const isComplete = ROLE_ORDER.every(r => roles[r] !== null);
-  const autoScore = isComplete ? computeAutoScore(roles, classes) : 0;
+  const teamDetails = isComplete ? computeTeamDetails(roles, classes) : null;
+  const autoScore = teamDetails?.overall ?? 0;
 
   const handleSelect = (role: RoleType) => (classId: string | null) => {
     setRoles(prev => ({ ...prev, [role]: classId }));
@@ -211,8 +212,48 @@ export function BuilderPage() {
           {/* Score */}
           <div className="dofus-card" style={{ padding: '1rem' }}>
             <div style={{ color: '#8b949e', fontSize: '0.8rem', marginBottom: '0.75rem', fontWeight: 600 }}>SCORE DE L'ÉQUIPE</div>
-            <ScoreBar score={isComplete ? autoScore : 0} label="Auto-score" size="lg" />
-            {!isComplete && <div style={{ color: '#8b949e', fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'center' }}>Complétez tous les rôles</div>}
+            <ScoreBar score={autoScore} label="Score global" size="lg" />
+
+            {teamDetails ? (
+              <>
+                <div style={{ height: 1, background: '#30363d', margin: '0.75rem 0' }} />
+                <div style={{ color: '#8b949e', fontSize: '0.72rem', marginBottom: '0.4rem', fontWeight: 600 }}>PAR RÔLE</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  {ROLE_ORDER.map(role => (
+                    <ScoreBar key={role} score={teamDetails.byRole[role]} label={ROLE_LABELS_SHORT[role]} size="sm" />
+                  ))}
+                </div>
+
+                <div style={{ height: 1, background: '#30363d', margin: '0.75rem 0' }} />
+                <div style={{ color: '#8b949e', fontSize: '0.72rem', marginBottom: '0.5rem', fontWeight: 600 }}>PORTÉE DE COMBAT</div>
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                  {([
+                    { label: '🏹 Distance', value: teamDetails.rangeProfile.range },
+                    { label: '⚔️ Mi-dist.', value: teamDetails.rangeProfile.midRange },
+                    { label: '🗡️ CAC', value: teamDetails.rangeProfile.melee },
+                  ] as const).map(({ label, value }) => {
+                    const { label: lvlLabel, color } = getDamageLevelStyle(value);
+                    return (
+                      <div key={label} style={{
+                        flex: 1,
+                        background: `${color}18`,
+                        border: `1px solid ${color}44`,
+                        borderRadius: 6,
+                        padding: '0.4rem 0.3rem',
+                        textAlign: 'center',
+                      }}>
+                        <div style={{ fontSize: '0.62rem', color: '#8b949e', marginBottom: 2 }}>{label}</div>
+                        <div style={{ fontSize: '0.72rem', color, fontWeight: 700 }}>{lvlLabel}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <div style={{ color: '#8b949e', fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'center' }}>
+                Complétez tous les rôles
+              </div>
+            )}
           </div>
 
           {/* Team preview */}
@@ -250,6 +291,13 @@ export function BuilderPage() {
                 stats={detailClass.stats as unknown as Record<string, number>}
                 labels={STAT_LABELS as unknown as Record<string, string>}
                 icons={STAT_ICONS as unknown as Record<string, string>}
+                qualitativeKeys={{
+                  aoesDamage: getDamageVolumeStyle,
+                  singleTargetDamage: getDamageVolumeStyle,
+                  rangeDamage: getDamageLevelStyle,
+                  midRangeDamage: getDamageLevelStyle,
+                  meleeDamage: getDamageLevelStyle,
+                }}
               />
               {detailClass.incompatibleWith.length > 0 && (
                 <div style={{ marginTop: '0.75rem', fontSize: '0.72rem', color: '#ff6b6b' }}>

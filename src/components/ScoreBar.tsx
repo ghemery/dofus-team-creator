@@ -70,39 +70,48 @@ interface StatRadarProps {
   stats: Record<string, number>;
   labels: Record<string, string>;
   icons?: Record<string, string>;
+  qualitativeKeys?: Record<string, (v: number) => { label: string; color: string }>;
 }
 
-export function StatGrid({ stats, labels, icons }: StatRadarProps) {
+export function StatGrid({ stats, labels, icons, qualitativeKeys }: StatRadarProps) {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '0.4rem',
-      }}
-    >
-      {Object.entries(stats).map(([key, value]) => (
-        <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#8b949e', fontSize: '0.7rem' }}>
-              {icons?.[key]} {labels[key]}
-            </span>
-            <span style={{ color: '#e6edf3', fontSize: '0.7rem', fontWeight: 600 }}>
-              {value}
-            </span>
-          </div>
-          <div style={{ height: 4, background: '#30363d', borderRadius: 2, overflow: 'hidden' }}>
-            <div
-              style={{
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+      {Object.entries(stats).map(([key, value]) => {
+        const qualFn = qualitativeKeys?.[key];
+        if (qualFn) {
+          const { label, color } = qualFn(value);
+          return (
+            <div key={key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3px 0' }}>
+              <span style={{ color: '#8b949e', fontSize: '0.7rem' }}>{icons?.[key]} {labels[key]}</span>
+              <span style={{
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                color,
+                background: `${color}18`,
+                border: `1px solid ${color}44`,
+                borderRadius: 4,
+                padding: '1px 5px',
+              }}>{label}</span>
+            </div>
+          );
+        }
+        return (
+          <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#8b949e', fontSize: '0.7rem' }}>{icons?.[key]} {labels[key]}</span>
+              <span style={{ color: '#e6edf3', fontSize: '0.7rem', fontWeight: 600 }}>{value}</span>
+            </div>
+            <div style={{ height: 4, background: '#30363d', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{
                 height: '100%',
                 width: `${value * 10}%`,
                 background: value >= 7 ? '#d4a017' : value >= 4 ? '#4da6ff' : '#30363d',
                 borderRadius: 2,
-              }}
-            />
+              }} />
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

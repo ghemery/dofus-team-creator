@@ -4,17 +4,17 @@
     "name": "Team Cra",
     "patch": "3.5",
     "roles": {
-      "tank": "feca",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "enutrof",
       "dpt": "cra",
-      "dpt2": "cra"
+      "dpt2": "feca"
     },
     "comment": {
       "description": "La composition la plus stable et polyvalente du patch 3.5. Le double Cra offre un retrait PM exceptionnel combiné à des dégâts distance constants. La Féca protège l'équipe des contre-attaques et l'Eniripsa assure les soins.",
       "strengths": "Très stable dans tous les contenus, excellent retrait PM, bonne portée, facile à jouer, peu de dépendances entre les classes",
-      "weaknesses": "Dégâts zone limités, peu de mobilité, performance linéaire sans burst exceptionnel"
+      "weaknesses": ""
     },
-    "autoScore": 8.5,
+    "autoScore": 10,
     "userRatings": [],
     "createdAt": 1710000000000
   },
@@ -23,8 +23,8 @@
     "name": "Team Elio/Iop",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "enutrof",
       "dpt": "iop",
       "dpt2": "eliotrope"
     },
@@ -42,10 +42,10 @@
     "name": "Team Erzatz Cra",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "sadida",
+      "tank": "pandawa",
+      "soutienPolyvalent": "enutrof",
       "dpt": "cra",
-      "dpt2": "enutrof"
+      "dpt2": "cra"
     },
     "comment": {
       "description": "Alternative à la Team Cra classique, plus polyvalente sur le long terme. La Sadida remplace l'Eniripsa avec des soins différés et un meilleur contrôle de zone. L'Enutrof apporte le retrait PM et la prospection.",
@@ -61,10 +61,10 @@
     "name": "Team Hupper",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "enutrof",
       "dpt": "huppermage",
-      "dpt2": "xelor"
+      "dpt2": "eliotrope"
     },
     "comment": {
       "description": "Excellente team pour les Songes et le contenu endgame. L'Huppermage avec sa maîtrise des 4 éléments s'adapte à toutes les résistances. Le Xélor complète avec un retrait PM massif et des dégâts area.",
@@ -80,10 +80,10 @@
     "name": "Team Funny Forge",
     "patch": "3.5",
     "roles": {
-      "tank": "feca",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "feca",
       "dpt": "forgelance",
-      "dpt2": "roublard"
+      "dpt2": "forgelance"
     },
     "comment": {
       "description": "Spécialisée dans le burst de zone avec les bombes du Roublard et les tourelles du Forgelance. La Féca protège les tourelles et les bombes des contre-attaques. Deux variantes : Feu ou Terre selon les résistances ennemies.",
@@ -99,10 +99,10 @@
     "name": "Team Sadi",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "sadida",
-      "dpt": "cra",
-      "dpt2": "pandawa"
+      "tank": "pandawa",
+      "soutienPolyvalent": "feca",
+      "dpt": "sadida",
+      "dpt2": "enutrof"
     },
     "comment": {
       "description": "Composition taillée pour l'early game ultra rapide. La Sadida ralentit et immobilise les ennemis pendant que le Cra et le Pandawa infligent des dégâts à distance. Excellente pour farmer les zones d'early game.",
@@ -118,10 +118,10 @@
     "name": "Team Roublard",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "feca",
       "dpt": "roublard",
-      "dpt2": "pandawa"
+      "dpt2": "enutrof"
     },
     "comment": {
       "description": "Team axée sur le potentiel d'OS (one-shot) via les bombes du Roublard. Le Pandawa repositionne les ennemis dans les zones de bombes. Long setup mais la récompense est une destruction totale en un tour.",
@@ -137,8 +137,8 @@
     "name": "Team Mêlée",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "eniripsa",
+      "tank": "pandawa",
+      "soutienPolyvalent": "zobal",
       "dpt": "iop",
       "dpt2": "ouginak"
     },
@@ -156,10 +156,10 @@
     "name": "Team Sans Panda",
     "patch": "3.5",
     "roles": {
-      "tank": "sacrier",
-      "soutienPolyvalent": "eniripsa",
-      "dpt": "xelor",
-      "dpt2": "steamer"
+      "tank": "sram",
+      "soutienPolyvalent": "feca",
+      "dpt": "sadida",
+      "dpt2": "huppermage"
     },
     "comment": {
       "description": "Alternative sans Pandawa misant sur beaucoup de contrôle pour compenser. Le Xélor vole des PA/PM, le Steamer contrôle le terrain avec ses tourelles. Le slot DPT2 est très flexible — un DPS polyvalent avec PES ou debuff est idéal.",

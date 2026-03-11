@@ -1,0 +1,401 @@
+[
+  {
+    "id": "cra",
+    "name": "Cra",
+    "logoUrl": "",
+    "color": "#4CAF50",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 5,
+      "singleTargetDamage": 9,
+      "mpRemoval": 7,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 3,
+      "rangeDamage": 10,
+      "midRangeDamage": 5,
+      "meleeDamage": 1,
+      "tankiness": 1
+    }
+  },
+  {
+    "id": "ecaflip",
+    "name": "Ecaflip",
+    "logoUrl": "",
+    "color": "#FF9800",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 4,
+      "singleTargetDamage": 7,
+      "mpRemoval": 0,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 5,
+      "healing": 6,
+      "mobility": 4,
+      "rangeDamage": 4,
+      "midRangeDamage": 6,
+      "meleeDamage": 5,
+      "tankiness": 3
+    }
+  },
+  {
+    "id": "eniripsa",
+    "name": "Eniripsa",
+    "logoUrl": "",
+    "color": "#E91E63",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 2,
+      "singleTargetDamage": 4,
+      "mpRemoval": 0,
+      "shield": 5,
+      "enemyDamageReduction": 3,
+      "lifeSteal": 0,
+      "healing": 10,
+      "mobility": 3,
+      "rangeDamage": 4,
+      "midRangeDamage": 3,
+      "meleeDamage": 1,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "enutrof",
+    "name": "Enutrof",
+    "logoUrl": "",
+    "color": "#FFD700",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 3,
+      "singleTargetDamage": 6,
+      "mpRemoval": 8,
+      "shield": 0,
+      "enemyDamageReduction": 2,
+      "lifeSteal": 0,
+      "healing": 2,
+      "mobility": 2,
+      "rangeDamage": 5,
+      "midRangeDamage": 4,
+      "meleeDamage": 3,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "feca",
+    "name": "Féca",
+    "logoUrl": "",
+    "color": "#2196F3",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 3,
+      "singleTargetDamage": 5,
+      "mpRemoval": 4,
+      "shield": 9,
+      "enemyDamageReduction": 8,
+      "lifeSteal": 0,
+      "healing": 3,
+      "mobility": 3,
+      "rangeDamage": 3,
+      "midRangeDamage": 3,
+      "meleeDamage": 2,
+      "tankiness": 7
+    }
+  },
+  {
+    "id": "iop",
+    "name": "Iop",
+    "logoUrl": "",
+    "color": "#F44336",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 6,
+      "singleTargetDamage": 10,
+      "mpRemoval": 0,
+      "shield": 2,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 5,
+      "rangeDamage": 1,
+      "midRangeDamage": 5,
+      "meleeDamage": 10,
+      "tankiness": 4
+    }
+  },
+  {
+    "id": "osamodas",
+    "name": "Osamodas",
+    "logoUrl": "",
+    "color": "#795548",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 5,
+      "singleTargetDamage": 6,
+      "mpRemoval": 0,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 7,
+      "mobility": 5,
+      "rangeDamage": 6,
+      "midRangeDamage": 5,
+      "meleeDamage": 3,
+      "tankiness": 5
+    }
+  },
+  {
+    "id": "pandawa",
+    "name": "Pandawa",
+    "logoUrl": "",
+    "color": "#9C27B0",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 7,
+      "singleTargetDamage": 5,
+      "mpRemoval": 5,
+      "shield": 2,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 4,
+      "mobility": 6,
+      "rangeDamage": 2,
+      "midRangeDamage": 5,
+      "meleeDamage": 6,
+      "tankiness": 3
+    }
+  },
+  {
+    "id": "sacrier",
+    "name": "Sacrier",
+    "logoUrl": "",
+    "color": "#FF5722",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 5,
+      "singleTargetDamage": 7,
+      "mpRemoval": 0,
+      "shield": 3,
+      "enemyDamageReduction": 3,
+      "lifeSteal": 6,
+      "healing": 2,
+      "mobility": 9,
+      "rangeDamage": 1,
+      "midRangeDamage": 3,
+      "meleeDamage": 8,
+      "tankiness": 7
+    }
+  },
+  {
+    "id": "sadida",
+    "name": "Sadida",
+    "logoUrl": "",
+    "color": "#4CAF50",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 6,
+      "singleTargetDamage": 4,
+      "mpRemoval": 6,
+      "shield": 2,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 8,
+      "mobility": 3,
+      "rangeDamage": 5,
+      "midRangeDamage": 4,
+      "meleeDamage": 2,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "sram",
+    "name": "Sram",
+    "logoUrl": "",
+    "color": "#607D8B",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 4,
+      "singleTargetDamage": 9,
+      "mpRemoval": 5,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 7,
+      "rangeDamage": 4,
+      "midRangeDamage": 6,
+      "meleeDamage": 7,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "xelor",
+    "name": "Xélor",
+    "logoUrl": "",
+    "color": "#673AB7",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 6,
+      "singleTargetDamage": 8,
+      "mpRemoval": 10,
+      "shield": 0,
+      "enemyDamageReduction": 2,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 5,
+      "rangeDamage": 8,
+      "midRangeDamage": 5,
+      "meleeDamage": 1,
+      "tankiness": 1
+    }
+  },
+  {
+    "id": "roublard",
+    "name": "Roublard",
+    "logoUrl": "",
+    "color": "#FF6B35",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 8,
+      "singleTargetDamage": 7,
+      "mpRemoval": 3,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 6,
+      "rangeDamage": 3,
+      "midRangeDamage": 8,
+      "meleeDamage": 6,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "zobal",
+    "name": "Zobal",
+    "logoUrl": "",
+    "color": "#00BCD4",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 5,
+      "singleTargetDamage": 7,
+      "mpRemoval": 0,
+      "shield": 7,
+      "enemyDamageReduction": 4,
+      "lifeSteal": 0,
+      "healing": 3,
+      "mobility": 5,
+      "rangeDamage": 4,
+      "midRangeDamage": 6,
+      "meleeDamage": 5,
+      "tankiness": 5
+    }
+  },
+  {
+    "id": "steamer",
+    "name": "Steamer",
+    "logoUrl": "",
+    "color": "#78909C",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 6,
+      "singleTargetDamage": 6,
+      "mpRemoval": 0,
+      "shield": 4,
+      "enemyDamageReduction": 3,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 4,
+      "rangeDamage": 7,
+      "midRangeDamage": 6,
+      "meleeDamage": 4,
+      "tankiness": 6
+    }
+  },
+  {
+    "id": "eliotrope",
+    "name": "Eliotrope",
+    "logoUrl": "",
+    "color": "#3F51B5",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 6,
+      "singleTargetDamage": 7,
+      "mpRemoval": 4,
+      "shield": 2,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 10,
+      "rangeDamage": 6,
+      "midRangeDamage": 7,
+      "meleeDamage": 3,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "huppermage",
+    "name": "Huppermage",
+    "logoUrl": "",
+    "color": "#CDDC39",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 8,
+      "singleTargetDamage": 8,
+      "mpRemoval": 3,
+      "shield": 3,
+      "enemyDamageReduction": 2,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 6,
+      "rangeDamage": 7,
+      "midRangeDamage": 8,
+      "meleeDamage": 4,
+      "tankiness": 2
+    }
+  },
+  {
+    "id": "ouginak",
+    "name": "Ouginak",
+    "logoUrl": "",
+    "color": "#8BC34A",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 4,
+      "singleTargetDamage": 8,
+      "mpRemoval": 0,
+      "shield": 0,
+      "enemyDamageReduction": 0,
+      "lifeSteal": 7,
+      "healing": 0,
+      "mobility": 7,
+      "rangeDamage": 1,
+      "midRangeDamage": 4,
+      "meleeDamage": 9,
+      "tankiness": 4
+    }
+  },
+  {
+    "id": "forgelance",
+    "name": "Forgelance",
+    "logoUrl": "",
+    "color": "#9E9E9E",
+    "incompatibleWith": [],
+    "stats": {
+      "aoesDamage": 5,
+      "singleTargetDamage": 8,
+      "mpRemoval": 2,
+      "shield": 5,
+      "enemyDamageReduction": 5,
+      "lifeSteal": 0,
+      "healing": 0,
+      "mobility": 3,
+      "rangeDamage": 2,
+      "midRangeDamage": 5,
+      "meleeDamage": 8,
+      "tankiness": 8
+    }
+  }
+]

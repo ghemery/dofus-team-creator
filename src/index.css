@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg-primary: #0d1117;
+    --color-bg-secondary: #161b22;
+    --color-bg-card: #1c2128;
+    --color-border: #30363d;
+    --color-gold: #d4a017;
+    --color-gold-light: #f0c040;
+    --color-text-primary: #e6edf3;
+    --color-text-secondary: #8b949e;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer components {
+  .dofus-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+
+  .dofus-btn {
+    background: linear-gradient(135deg, #b8860b, #d4a017);
+    color: #0d1117;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dofus-btn:hover {
+    background: linear-gradient(135deg, #d4a017, #f0c040);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 160, 23, 0.35);
+  }
+
+  .dofus-btn-outline {
+    background: transparent;
+    color: var(--color-gold);
+    font-weight: 600;
+    border: 1px solid var(--color-gold);
+    border-radius: 8px;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dofus-btn-outline:hover {
+    background: rgba(212, 160, 23, 0.1);
+  }
+
+  .tier-s { color: #ff4d4d; font-weight: 800; }
+  .tier-a { color: #ff9900; font-weight: 800; }
+  .tier-b { color: #4da6ff; font-weight: 800; }
+  .tier-c { color: #8b949e; font-weight: 800; }
+
+  .tier-badge-s { background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #ff4d4d; }
+  .tier-badge-a { background: rgba(255, 153, 0, 0.15); border: 1px solid #ff9900; color: #ff9900; }
+  .tier-badge-b { background: rgba(77, 166, 255, 0.15); border: 1px solid #4da6ff; color: #4da6ff; }
+  .tier-badge-c { background: rgba(139, 148, 158, 0.15); border: 1px solid #8b949e; color: #8b949e; }
+
+  .role-dps1 { border-color: #ff6b6b; }
+  .role-dps2 { border-color: #ff9f43; }
+  .role-tank { border-color: #48dbfb; }
+  .role-support { border-color: #1dd1a1; }
+
+  .role-dps1-bg { background: rgba(255, 107, 107, 0.08); }
+  .role-dps2-bg { background: rgba(255, 159, 67, 0.08); }
+  .role-tank-bg { background: rgba(72, 219, 251, 0.08); }
+  .role-support-bg { background: rgba(29, 209, 161, 0.08); }
+}

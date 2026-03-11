@@ -1,0 +1,173 @@
+[
+  {
+    "id": "default_team_cra",
+    "name": "Team Cra",
+    "patch": "3.5",
+    "roles": {
+      "tank": "feca",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "cra",
+      "dpt2": "cra"
+    },
+    "comment": {
+      "description": "La composition la plus stable et polyvalente du patch 3.5. Le double Cra offre un retrait PM exceptionnel combiné à des dégâts distance constants. La Féca protège l'équipe des contre-attaques et l'Eniripsa assure les soins.",
+      "strengths": "Très stable dans tous les contenus, excellent retrait PM, bonne portée, facile à jouer, peu de dépendances entre les classes",
+      "weaknesses": "Dégâts zone limités, peu de mobilité, performance linéaire sans burst exceptionnel"
+    },
+    "autoScore": 8.5,
+    "userRatings": [],
+    "createdAt": 1710000000000
+  },
+  {
+    "id": "default_team_elio_iop",
+    "name": "Team Elio/Iop",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "iop",
+      "dpt2": "eliotrope"
+    },
+    "comment": {
+      "description": "La meilleure config pour les succès et donjons en patch 3.5. L'Eliotrope et le Sacrier apportent une mobilité extrême avec les portails, permettant à l'Iop de s'assurer sur les cibles les plus solides.",
+      "strengths": "Mobilité exceptionnelle via les portails, burst monocible dévastateur, excellent pour les donjons et succès, très fun à jouer",
+      "weaknesses": "Setup complexe nécessitant coordination, dégâts zone insuffisants pour les gros packs, très dépendant du positionnement"
+    },
+    "autoScore": 9.0,
+    "userRatings": [],
+    "createdAt": 1710000001000
+  },
+  {
+    "id": "default_team_erzatz_cra",
+    "name": "Team Erzatz Cra",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "sadida",
+      "dpt": "cra",
+      "dpt2": "enutrof"
+    },
+    "comment": {
+      "description": "Alternative à la Team Cra classique, plus polyvalente sur le long terme. La Sadida remplace l'Eniripsa avec des soins différés et un meilleur contrôle de zone. L'Enutrof apporte le retrait PM et la prospection.",
+      "strengths": "Très peu de prise de tête tout au long du jeu, polyvalente, bonne gestion des ressources avec l'Enutrof",
+      "weaknesses": "Soins moins réactifs que l'Eniripsa, dépend du temps de setup de la Sadida"
+    },
+    "autoScore": 7.5,
+    "userRatings": [],
+    "createdAt": 1710000002000
+  },
+  {
+    "id": "default_team_hupper",
+    "name": "Team Hupper",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "huppermage",
+      "dpt2": "xelor"
+    },
+    "comment": {
+      "description": "Excellente team pour les Songes et le contenu endgame. L'Huppermage avec sa maîtrise des 4 éléments s'adapte à toutes les résistances. Le Xélor complète avec un retrait PM massif et des dégâts area.",
+      "strengths": "Très accès endgame, polyvalent élémentairement, excellent contrôle avec le Xélor, forte puissance de feu en mid/late game",
+      "weaknesses": "Faible en early game, courbe d'apprentissage élevée pour l'Huppermage, peu efficace sans bon équipement"
+    },
+    "autoScore": 7.8,
+    "userRatings": [],
+    "createdAt": 1710000003000
+  },
+  {
+    "id": "default_team_funny_forge",
+    "name": "Team Funny Forge",
+    "patch": "3.5",
+    "roles": {
+      "tank": "feca",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "forgelance",
+      "dpt2": "roublard"
+    },
+    "comment": {
+      "description": "Spécialisée dans le burst de zone avec les bombes du Roublard et les tourelles du Forgelance. La Féca protège les tourelles et les bombes des contre-attaques. Deux variantes : Feu ou Terre selon les résistances ennemies.",
+      "strengths": "Excellent burst de zone, très efficace sur les gros packs, original et fun à jouer, bonnes synergie bombes/tourelles",
+      "weaknesses": "Long setup (déploiement des bombes et tourelles), lacunes de contrôle en endgame, peut manquer de réactivité"
+    },
+    "autoScore": 7.2,
+    "userRatings": [],
+    "createdAt": 1710000004000
+  },
+  {
+    "id": "default_team_sadi",
+    "name": "Team Sadi",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "sadida",
+      "dpt": "cra",
+      "dpt2": "pandawa"
+    },
+    "comment": {
+      "description": "Composition taillée pour l'early game ultra rapide. La Sadida ralentit et immobilise les ennemis pendant que le Cra et le Pandawa infligent des dégâts à distance. Excellente pour farmer les zones d'early game.",
+      "strengths": "Early game très fast, beaucoup de contrôle avec la Sadida, bonne synergie Pandawa/Cra pour le positionnement",
+      "weaknesses": "Perd en efficacité en mid/late game, peu de burst, les poupées Sadida peuvent encombrer le terrain"
+    },
+    "autoScore": 6.0,
+    "userRatings": [],
+    "createdAt": 1710000005000
+  },
+  {
+    "id": "default_team_roublard",
+    "name": "Team Roublard",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "roublard",
+      "dpt2": "pandawa"
+    },
+    "comment": {
+      "description": "Team axée sur le potentiel d'OS (one-shot) via les bombes du Roublard. Le Pandawa repositionne les ennemis dans les zones de bombes. Long setup mais la récompense est une destruction totale en un tour.",
+      "strengths": "Potentiel d'OS exceptionnel une fois le setup en place, très satisfaisant à jouer, bon contrôle des positions",
+      "weaknesses": "Long setup (3-4 tours minimum), vulnérable pendant la mise en place, très dépendant du positionnement initial"
+    },
+    "autoScore": 5.8,
+    "userRatings": [],
+    "createdAt": 1710000006000
+  },
+  {
+    "id": "default_team_melee",
+    "name": "Team Mêlée",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "iop",
+      "dpt2": "ouginak"
+    },
+    "comment": {
+      "description": "Composition bourrin axée corps à corps pour un early game safe. Le Sacrier peut être remplacé par une Féca si besoin de plus de protection. L'Ouginak et l'Iop martèlent les ennemis au contact, soutenus par l'Eniripsa.",
+      "strengths": "Compo bourrin très intuitive, early game safe, peu de setup requis, efficace dans les zones confinées",
+      "weaknesses": "Aura du mal en endgame face aux ennemis qui contre-attaquent au CAC, peu de dégâts à distance, vulnérable aux sorts de zone"
+    },
+    "autoScore": 5.5,
+    "userRatings": [],
+    "createdAt": 1710000007000
+  },
+  {
+    "id": "default_team_sans_panda",
+    "name": "Team Sans Panda",
+    "patch": "3.5",
+    "roles": {
+      "tank": "sacrier",
+      "soutienPolyvalent": "eniripsa",
+      "dpt": "xelor",
+      "dpt2": "steamer"
+    },
+    "comment": {
+      "description": "Alternative sans Pandawa misant sur beaucoup de contrôle pour compenser. Le Xélor vole des PA/PM, le Steamer contrôle le terrain avec ses tourelles. Le slot DPT2 est très flexible — un DPS polyvalent avec PES ou debuff est idéal.",
+      "strengths": "Beaucoup de contrôle (PA/PM), bon split pour le solo, le Steamer peut tenir le terrain seul, slot flexible",
+      "weaknesses": "Manque de burst, nécessite un DPS polyvalent avec PES/debuff pour briller, peu de synergie directe entre les classes"
+    },
+    "autoScore": 4.5,
+    "userRatings": [],
+    "createdAt": 1710000008000
+  }
+]

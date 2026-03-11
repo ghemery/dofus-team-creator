@@ -14,18 +14,17 @@ export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotP
   const [open, setOpen] = useState(false);
   const selectedClass = classes.find(c => c.id === selectedClassId) ?? null;
   const roleColor = ROLE_COLORS[role];
+  const roleLabel = ROLE_LABELS[role];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-      {/* Role header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <div style={{ width: 10, height: 10, borderRadius: '50%', background: roleColor }} />
-        <span style={{ color: roleColor, fontWeight: 700, fontSize: '0.9rem' }}>
-          {ROLE_LABELS[role]}
+        <div style={{ width: 10, height: 10, borderRadius: '50%', background: roleColor, flexShrink: 0 }} />
+        <span style={{ color: roleColor, fontWeight: 700, fontSize: '0.85rem' }}>
+          {roleLabel}
         </span>
       </div>
 
-      {/* Selected class slot */}
       <div
         onClick={() => setOpen(!open)}
         style={{
@@ -45,19 +44,11 @@ export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotP
           <>
             <ClassLogo dofusClass={selectedClass} size={52} selected />
             <div style={{ flex: 1 }}>
-              <div style={{ color: selectedClass.color, fontWeight: 700 }}>
-                {selectedClass.name}
-              </div>
-              <div style={{ color: '#8b949e', fontSize: '0.75rem', marginTop: 2 }}>
-                Cliquer pour changer
-              </div>
+              <div style={{ color: selectedClass.color, fontWeight: 700 }}>{selectedClass.name}</div>
+              <div style={{ color: '#8b949e', fontSize: '0.75rem', marginTop: 2 }}>Cliquer pour changer</div>
             </div>
             <button
-              onClick={e => {
-                e.stopPropagation();
-                onSelect(null);
-                setOpen(false);
-              }}
+              onClick={e => { e.stopPropagation(); onSelect(null); setOpen(false); }}
               style={{
                 background: 'rgba(255,100,100,0.15)',
                 border: '1px solid rgba(255,100,100,0.3)',
@@ -67,9 +58,7 @@ export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotP
                 cursor: 'pointer',
                 fontSize: '0.75rem',
               }}
-            >
-              ✕
-            </button>
+            >✕</button>
           </>
         ) : (
           <div style={{ flex: 1, textAlign: 'center', color: '#8b949e' }}>
@@ -79,41 +68,22 @@ export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotP
         )}
       </div>
 
-      {/* Class picker dropdown */}
       {open && (
-        <div
-          style={{
-            background: '#1c2128',
-            border: `1px solid ${roleColor}44`,
-            borderRadius: 12,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-            zIndex: 10,
-          }}
-        >
+        <div style={{
+          background: '#1c2128',
+          border: `1px solid ${roleColor}44`,
+          borderRadius: 12,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          zIndex: 10,
+        }}>
           <div style={{ padding: '0.75rem 0.75rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ color: '#8b949e', fontSize: '0.8rem' }}>Sélectionner une classe</span>
             <button
               onClick={() => setOpen(false)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#8b949e',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                padding: '0 0.25rem',
-              }}
-            >
-              ✕
-            </button>
+              style={{ background: 'transparent', border: 'none', color: '#8b949e', cursor: 'pointer', fontSize: '1rem', padding: '0 0.25rem' }}
+            >✕</button>
           </div>
-          <ClassGrid
-            classes={classes}
-            selectedId={selectedClassId}
-            onSelect={id => {
-              onSelect(id);
-              setOpen(false);
-            }}
-          />
+          <ClassGrid classes={classes} selectedId={selectedClassId} onSelect={id => { onSelect(id); setOpen(false); }} />
         </div>
       )}
     </div>

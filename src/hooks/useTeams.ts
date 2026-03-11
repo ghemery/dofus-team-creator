@@ -1,16 +1,30 @@
-import { useState, useCallback } from 'react';
-import { SavedTeam, TeamRoles } from '../types';
-import { loadTeams, saveTeam, rateTeam, deleteTeam, hasRated } from '../lib/storage';
+import { useState, useCallback, useEffect } from 'react';
+import { SavedTeam, TeamRoles, TeamComment, CURRENT_PATCH, EMPTY_COMMENT } from '../types';
+import { loadTeams, saveTeam, rateTeam, deleteTeam, hasRated, initDefaultTeams } from '../lib/storage';
 
 export function useTeams() {
-  const [teams, setTeams] = useState<SavedTeam[]>(() => loadTeams());
+  const [teams, setTeams] = useState<SavedTeam[]>([]);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    initDefaultTeams().then(() => {
+      setTeams(loadTeams());
+      setInitialized(true);
+    });
+  }, []);
 
   const refresh = useCallback(() => {
     setTeams(loadTeams());
   }, []);
 
-  const addTeam = useCallback((roles: TeamRoles, autoScore: number, name?: string) => {
-    const team = saveTeam(roles, autoScore, name);
+  const addTeam = useCallback((
+    roles: TeamRoles,
+    autoScore: number,
+    patch: string = CURRENT_PATCH,
+    comment: TeamComment = EMPTY_COMMENT,
+    name?: string,
+  ) => {
+    const team = saveTeam(roles, autoScore, patch, comment, name);
     setTeams(prev => [...prev, team]);
     return team;
   }, []);
@@ -25,5 +39,5 @@ export function useTeams() {
     setTeams(prev => prev.filter(t => t.id !== teamId));
   }, []);
 
-  return { teams, addTeam, submitRating, removeTeam, hasRated, refresh };
+  return { teams, addTeam, submitRating, removeTeam, hasRated, refresh, initialized };
 }

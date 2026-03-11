@@ -8,7 +8,7 @@
       "eliotrope"
     ],
     "stats": {
-      "aoesDamage": 5,
+      "aoesDamage": 8,
       "singleTargetDamage": 9,
       "mpRemoval": 7,
       "shield": 0,
@@ -17,7 +17,7 @@
       "healing": 0,
       "mobility": 3,
       "rangeDamage": 10,
-      "midRangeDamage": 5,
+      "midRangeDamage": 7,
       "meleeDamage": 1,
       "tankiness": 1
     }
@@ -37,7 +37,7 @@
       "lifeSteal": 5,
       "healing": 6,
       "mobility": 4,
-      "rangeDamage": 4,
+      "rangeDamage": 6,
       "midRangeDamage": 6,
       "meleeDamage": 5,
       "tankiness": 3
@@ -71,17 +71,17 @@
     "color": "#FFD700",
     "incompatibleWith": [],
     "stats": {
-      "aoesDamage": 3,
-      "singleTargetDamage": 6,
+      "aoesDamage": 4,
+      "singleTargetDamage": 7,
       "mpRemoval": 10,
       "shield": 0,
       "enemyDamageReduction": 2,
-      "lifeSteal": 3,
-      "healing": 2,
+      "lifeSteal": 5,
+      "healing": 3,
       "mobility": 2,
-      "rangeDamage": 6,
-      "midRangeDamage": 4,
-      "meleeDamage": 3,
+      "rangeDamage": 7,
+      "midRangeDamage": 7,
+      "meleeDamage": 5,
       "tankiness": 2
     }
   },
@@ -92,18 +92,18 @@
     "color": "#2196F3",
     "incompatibleWith": [],
     "stats": {
-      "aoesDamage": 3,
+      "aoesDamage": 5,
       "singleTargetDamage": 5,
-      "mpRemoval": 7,
-      "shield": 9,
-      "enemyDamageReduction": 8,
+      "mpRemoval": 8,
+      "shield": 0,
+      "enemyDamageReduction": 10,
       "lifeSteal": 0,
       "healing": 3,
       "mobility": 3,
-      "rangeDamage": 3,
+      "rangeDamage": 6,
       "midRangeDamage": 3,
       "meleeDamage": 2,
-      "tankiness": 6
+      "tankiness": 8
     }
   },
   {
@@ -229,7 +229,7 @@
       "rangeDamage": 4,
       "midRangeDamage": 6,
       "meleeDamage": 7,
-      "tankiness": 2
+      "tankiness": 7
     }
   },
   {
@@ -321,7 +321,9 @@
     "name": "Eliotrope",
     "logoUrl": "https://static.ankama.com/dofus/ng/modules/mmorpg/encyclopedia/unity/breeds/assets/avatar/16.jpg",
     "color": "#3F51B5",
-    "incompatibleWith": [],
+    "incompatibleWith": [
+      "cra"
+    ],
     "stats": {
       "aoesDamage": 6,
       "singleTargetDamage": 7,

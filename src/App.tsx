@@ -4,6 +4,7 @@ import { BuilderPage } from './pages/BuilderPage';
 import { TierListPage } from './pages/TierListPage';
 import { RankingPage } from './pages/RankingPage';
 import { AdminPage } from './pages/AdminPage';
+import { ClassesPage } from './pages/ClassesPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<BuilderPage />} />
             <Route path="/tierlist" element={<TierListPage />} />
             <Route path="/classement" element={<RankingPage />} />
+            <Route path="/classes" element={<ClassesPage />} />
             <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </main>

@@ -1,4 +1,16 @@
-import { DofusClass, SavedTeam, TeamRoles, TeamComment, CURRENT_PATCH, EMPTY_COMMENT } from '../types';
+import { DofusClass, ClassStats, SavedTeam, TeamRoles, TeamComment, CURRENT_PATCH, EMPTY_COMMENT } from '../types';
+import {
+  apiGetTeams,
+  apiCreateTeam,
+  apiDeleteTeam,
+  apiRateTeam,
+  apiGetClasses,
+  apiSaveClasses,
+  apiVerifyAdmin,
+  apiChangePassword,
+  apiGetClassCommunityStats,
+  apiRateClass,
+} from './api';
 
 const BASE_URL = import.meta.env.BASE_URL;
 
@@ -8,20 +20,35 @@ let cachedClasses: DofusClass[] | null = null;
 
 export async function loadClasses(): Promise<DofusClass[]> {
   if (cachedClasses) return cachedClasses;
+
+  // Check API override first
+  try {
+    const override = await apiGetClasses();
+    if (override && override.length > 0) {
+      cachedClasses = override;
+      return cachedClasses;
+    }
+  } catch {
+    // Server not available, fall through to static file
+  }
+
   const resp = await fetch(`${BASE_URL}data/classes.json`);
   const data = await resp.json();
   cachedClasses = data as DofusClass[];
   return cachedClasses;
 }
 
-export function saveClassesToStorage(classes: DofusClass[]): void {
+export async function saveClassesToStorage(classes: DofusClass[], adminPassword: string): Promise<void> {
   cachedClasses = classes;
-  localStorage.setItem('dofus_classes_override', JSON.stringify(classes));
+  await apiSaveClasses(classes, adminPassword);
 }
 
-export function getClassesOverride(): DofusClass[] | null {
-  const raw = localStorage.getItem('dofus_classes_override');
-  return raw ? JSON.parse(raw) : null;
+export async function getClassesOverride(): Promise<DofusClass[] | null> {
+  try {
+    return await apiGetClasses();
+  } catch {
+    return null;
+  }
 }
 
 export function exportClassesJson(classes: DofusClass[]): void {
@@ -34,96 +61,84 @@ export function exportClassesJson(classes: DofusClass[]): void {
   URL.revokeObjectURL(url);
 }
 
-// ─── Default teams ────────────────────────────────────────────────────────────
+// ─── Teams ────────────────────────────────────────────────────────────────────
 
-async function loadDefaultTeams(): Promise<SavedTeam[]> {
-  try {
-    const resp = await fetch(`${BASE_URL}data/defaultTeams.json`);
-    if (!resp.ok) return [];
-    return await resp.json() as SavedTeam[];
-  } catch {
-    return [];
-  }
+export async function loadTeams(): Promise<SavedTeam[]> {
+  return apiGetTeams();
 }
 
-// ─── Teams (localStorage) ─────────────────────────────────────────────────────
-
-const TEAMS_KEY = 'dofus_teams';
-const DEFAULTS_LOADED_KEY = 'dofus_defaults_loaded';
-
-export function loadTeams(): SavedTeam[] {
-  const raw = localStorage.getItem(TEAMS_KEY);
-  return raw ? JSON.parse(raw) : [];
-}
-
-function persistTeams(teams: SavedTeam[]): void {
-  localStorage.setItem(TEAMS_KEY, JSON.stringify(teams));
-}
-
-export async function initDefaultTeams(): Promise<void> {
-  if (localStorage.getItem(DEFAULTS_LOADED_KEY)) return;
-  const defaults = await loadDefaultTeams();
-  if (defaults.length === 0) return;
-  const existing = loadTeams();
-  if (existing.length === 0) {
-    persistTeams(defaults);
-  }
-  localStorage.setItem(DEFAULTS_LOADED_KEY, '1');
-}
-
-export function saveTeam(
+export async function saveTeam(
   roles: TeamRoles,
   autoScore: number,
   patch: string = CURRENT_PATCH,
   comment: TeamComment = EMPTY_COMMENT,
   name?: string,
-): SavedTeam {
-  const teams = loadTeams();
-  const team: SavedTeam = {
-    id: Date.now().toString(),
-    roles,
-    patch,
-    comment,
-    autoScore,
-    userRatings: [],
-    createdAt: Date.now(),
-    name,
-  };
-  teams.push(team);
-  persistTeams(teams);
-  return team;
+): Promise<SavedTeam> {
+  return apiCreateTeam(roles, autoScore, patch, comment, name);
 }
 
-export function rateTeam(teamId: string, rating: number): void {
-  const teams = loadTeams();
-  const team = teams.find(t => t.id === teamId);
-  if (!team) return;
+export async function rateTeam(teamId: string, rating: number): Promise<void> {
   const ratedKey = `rated_${teamId}`;
   if (localStorage.getItem(ratedKey)) return;
-  team.userRatings.push(rating);
+  await apiRateTeam(teamId, rating);
   localStorage.setItem(ratedKey, '1');
-  persistTeams(teams);
 }
 
 export function hasRated(teamId: string): boolean {
   return !!localStorage.getItem(`rated_${teamId}`);
 }
 
-export function deleteTeam(teamId: string): void {
-  const teams = loadTeams().filter(t => t.id !== teamId);
-  persistTeams(teams);
+export async function deleteTeam(teamId: string): Promise<void> {
+  await apiDeleteTeam(teamId);
 }
 
 // ─── Admin password ───────────────────────────────────────────────────────────
 
-const ADMIN_KEY = 'dofus_admin_pwd';
-const DEFAULT_ADMIN_PASSWORD = 'admin1234';
-
-export function checkAdminPassword(pwd: string): boolean {
-  const stored = localStorage.getItem(ADMIN_KEY) ?? DEFAULT_ADMIN_PASSWORD;
-  return pwd === stored;
+export async function checkAdminPassword(pwd: string): Promise<boolean> {
+  return apiVerifyAdmin(pwd);
 }
 
-export function setAdminPassword(newPwd: string): void {
-  localStorage.setItem(ADMIN_KEY, newPwd);
+export async function setAdminPassword(currentPwd: string, newPwd: string): Promise<void> {
+  await apiChangePassword(currentPwd, newPwd);
+}
+
+// ─── Class Ratings ─────────────────────────────────────────────────────────────
+
+export async function loadClassCommunityStats(): Promise<{ averages: Record<string, ClassStats>; counts: Record<string, number> }> {
+  try {
+    return await apiGetClassCommunityStats();
+  } catch {
+    return { averages: {}, counts: {} };
+  }
+}
+
+export async function rateClass(classId: string, stats: ClassStats): Promise<void> {
+  await apiRateClass(classId, stats);
+  localStorage.setItem(`rated_class_${classId}`, '1');
+}
+
+export function hasRatedClass(classId: string): boolean {
+  return !!localStorage.getItem(`rated_class_${classId}`);
+}
+
+// ─── Migration: localStorage → SQLite ────────────────────────────────────────
+
+export async function migrateLocalStorageTeams(): Promise<void> {
+  if (localStorage.getItem('dofus_migrated_to_api')) return;
+  const raw = localStorage.getItem('dofus_teams');
+  if (!raw) {
+    localStorage.setItem('dofus_migrated_to_api', '1');
+    return;
+  }
+  try {
+    const teams: SavedTeam[] = JSON.parse(raw);
+    const userTeams = teams.filter(t => !t.id.startsWith('default_'));
+    for (const t of userTeams) {
+      await apiCreateTeam(t.roles, t.autoScore, t.patch, t.comment, t.name, t.createdAt);
+    }
+    localStorage.setItem('dofus_migrated_to_api', '1');
+    console.log(`[migration] Migrated ${userTeams.length} teams to SQLite`);
+  } catch (err) {
+    console.warn('[migration] Failed to migrate teams:', err);
+  }
 }

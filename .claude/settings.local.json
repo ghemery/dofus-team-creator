@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run dev)",
       "Bash(cd C:/laragon/www/dofus-team-creator && npm install && npm run dev)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:www.rtk-ai.app)"
     ]
   }
 }

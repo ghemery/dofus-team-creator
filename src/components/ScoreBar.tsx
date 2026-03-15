@@ -1,4 +1,5 @@
 import { getTier } from '../types';
+import { StarRating } from './StarRating';
 
 interface ScoreBarProps {
   score: number;
@@ -27,7 +28,7 @@ export function ScoreBar({ score, label, size = 'md' }: ScoreBarProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ color: '#8b949e', fontSize: '0.75rem' }}>{label}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color, fontWeight: 700, fontSize: '0.85rem' }}>{score}/10</span>
+            <StarRating value={Math.round(score / 2)} readonly size={14} showValue={false} />
             <span
               style={{
                 background: `${color}22`,

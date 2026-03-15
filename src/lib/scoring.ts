@@ -65,6 +65,13 @@ export function computeRoleScore(cls: DofusClass, role: RoleType): number {
   }
 }
 
+export function computePerfectRole(stats: ClassStats): RoleType {
+  const cls = { stats } as DofusClass;
+  return ROLE_ORDER.reduce((best, role) =>
+    computeRoleScore(cls, role) > computeRoleScore(cls, best) ? role : best
+  );
+}
+
 // --- Team scoring ---
 
 export interface RangeProfile {
@@ -118,8 +125,9 @@ export function computeAutoScore(roles: TeamRoles, classes: DofusClass[]): numbe
 
 export function computeFinalScore(autoScore: number, userRatings: number[]): number {
   if (userRatings.length === 0) return autoScore;
+  // userRatings are on a 1–5 scale; normalise to 0–10 before blending
   const avg = userRatings.reduce((s, r) => s + r, 0) / userRatings.length;
-  return Math.round((autoScore * 0.3 + avg * 0.7) * 10) / 10;
+  return Math.round((autoScore * 0.3 + avg * 2 * 0.7) * 10) / 10;
 }
 
 export function getAverageRating(ratings: number[]): number | null {

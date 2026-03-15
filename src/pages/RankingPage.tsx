@@ -5,6 +5,7 @@ import { computeFinalScore, getAverageRating, getTier } from '../lib/scoring';
 import { ROLE_ORDER } from '../types';
 import { ClassLogo } from '../components/ClassLogo';
 import { TeamModal } from '../components/TeamModal';
+import { StarRating } from '../components/StarRating';
 
 type SortKey = 'name' | 'autoScore' | 'community' | 'finalScore' | 'patch';
 type SortDir = 'asc' | 'desc';
@@ -120,7 +121,7 @@ export function RankingPage() {
                 const final = computeFinalScore(team.autoScore, team.userRatings);
                 const tier = getTier(final);
                 const tierColor = tierColors[tier];
-                const isDefault = team.id.startsWith('default_');
+                const isDefault = team.isRecommended === true;
 
                 return (
                   <tr
@@ -164,19 +165,19 @@ export function RankingPage() {
                         {team.patch ?? '3.5'}
                       </span>
                     </td>
-                    <td style={{ ...tdBase, textAlign: 'center', color: '#8b949e' }}>
-                      {team.autoScore}/10
+                    <td style={{ ...tdBase, textAlign: 'center' }}>
+                      <StarRating value={Math.round(team.autoScore / 2)} readonly size={14} showValue={false} />
                     </td>
                     <td style={{ ...tdBase, textAlign: 'center' }}>
                       {community !== null ? (
-                        <span style={{ color: '#e6edf3' }}>{community}/10</span>
+                        <StarRating value={Math.round(community)} readonly size={14} showValue={false} />
                       ) : (
                         <span style={{ color: '#444c56' }}>—</span>
                       )}
                     </td>
                     <td style={{ ...tdBase, textAlign: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                        <span style={{ color: tierColor, fontWeight: 700 }}>{final}/10</span>
+                        <StarRating value={Math.round(final / 2)} readonly size={14} showValue={false} />
                         <span style={{
                           background: `${tierColor}22`, border: `1px solid ${tierColor}`,
                           color: tierColor, borderRadius: 4, padding: '1px 6px',

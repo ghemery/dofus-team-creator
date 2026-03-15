@@ -216,7 +216,7 @@ export function TeamModal({ team, classes, onClose, onRate, hasRated }: TeamModa
                   background: 'rgba(29,209,161,0.07)', border: '1px solid rgba(29,209,161,0.2)',
                   borderRadius: 8, color: '#1dd1a1', fontSize: '0.82rem', fontWeight: 600,
                 }}>
-                  ✓ Vote enregistré · Moyenne : {communityAvg ?? team.autoScore}/10
+                  ✓ Vote enregistré · Moyenne communauté : {communityAvg !== null ? communityAvg.toFixed(1) : (team.autoScore / 2).toFixed(1)} / 5 ★
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>

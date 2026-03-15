@@ -10,10 +10,10 @@ import { TeamModal } from '../components/TeamModal';
 const TIERS: Tier[] = ['S', 'A', 'B', 'C'];
 
 const tierConfig: Record<Tier, { color: string; desc: string }> = {
-  S: { color: '#ff4d4d', desc: 'Légendaire — ≥ 9' },
-  A: { color: '#ff9900', desc: 'Très bonne — 7-8' },
-  B: { color: '#4da6ff', desc: 'Correcte — 5-6' },
-  C: { color: '#8b949e', desc: 'À améliorer — < 5' },
+  S: { color: '#ff4d4d', desc: 'Légendaire — 5 ★' },
+  A: { color: '#ff9900', desc: 'Très bonne — 4 ★' },
+  B: { color: '#4da6ff', desc: 'Correcte — 3 ★' },
+  C: { color: '#8b949e', desc: 'À améliorer — 1-2 ★' },
 };
 
 export function TierListPage() {
@@ -26,7 +26,7 @@ export function TierListPage() {
     return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem', color: '#8b949e' }}>Chargement...</div>;
   }
 
-  const defaultTeams = teams.filter(t => t.id.startsWith('default_'));
+  const defaultTeams = teams.filter(t => t.isRecommended === true);
 
   const teamsByTier: Record<Tier, SavedTeam[]> = { S: [], A: [], B: [], C: [] };
   const sorted = [...defaultTeams].sort((a, b) =>

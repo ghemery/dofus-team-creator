@@ -1,17 +1,27 @@
 import { useState } from 'react';
-import { DofusClass, ClassStats, STAT_LABELS, STAT_ICONS } from '../types';
+import { DofusClass, ClassStats, TeamRoles, TeamComment, ROLE_ORDER, ROLE_LABELS_SHORT, AVAILABLE_PATCHES, CURRENT_PATCH, EMPTY_COMMENT } from '../types';
 import { useClasses } from '../hooks/useClasses';
+import { useTeams } from '../hooks/useTeams';
 import { saveClassesToStorage, exportClassesJson, checkAdminPassword, setAdminPassword } from '../lib/storage';
+import { computeTeamDetails } from '../lib/scoring';
 import { ClassLogo } from '../components/ClassLogo';
+import { StatSlider } from '../components/StatSlider';
+import { apiCreateRecommendedTeam, apiUpdateRecommendedTeam, apiDeleteRecommendedTeam } from '../lib/api';
 
-function AdminLogin({ onLogin }: { onLogin: () => void }) {
+// ─── Login ────────────────────────────────────────────────────────────────────
+
+function AdminLogin({ onLogin }: { onLogin: (pwd: string) => void }) {
   const [pwd, setPwd] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (checkAdminPassword(pwd)) {
-      onLogin();
+    setLoading(true);
+    const ok = await checkAdminPassword(pwd);
+    setLoading(false);
+    if (ok) {
+      onLogin(pwd);
     } else {
       setError('Mot de passe incorrect');
     }
@@ -38,7 +48,9 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
             />
             {error && <div style={{ color: '#ff6b6b', fontSize: '0.75rem', marginTop: 4 }}>{error}</div>}
           </div>
-          <button type="submit" className="dofus-btn" style={{ width: '100%' }}>Se connecter</button>
+          <button type="submit" className="dofus-btn" style={{ width: '100%' }} disabled={loading}>
+            {loading ? 'Connexion...' : 'Se connecter'}
+          </button>
         </form>
         <div style={{ marginTop: '1rem', color: '#8b949e', fontSize: '0.72rem', textAlign: 'center' }}>
           Mot de passe par défaut : <code style={{ color: '#d4a017' }}>admin1234</code>
@@ -48,22 +60,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-function StatSlider({ statKey, value, onChange }: { statKey: keyof ClassStats; value: number; onChange: (v: number) => void }) {
-  const label = STAT_LABELS[statKey];
-  const icon = STAT_ICONS[statKey];
-  const color = value >= 7 ? '#d4a017' : value >= 4 ? '#4da6ff' : '#8b949e';
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.75rem', color: '#8b949e' }}>{icon} {label}</span>
-        <span style={{ fontSize: '0.75rem', fontWeight: 700, color }}>{value}</span>
-      </div>
-      <input type="range" min={0} max={10} step={1} value={value} onChange={e => onChange(Number(e.target.value))}
-        style={{ width: '100%', accentColor: color, cursor: 'pointer' }} />
-    </div>
-  );
-}
+// ─── Class Editor ─────────────────────────────────────────────────────────────
 
 function ClassEditor({ cls, allClasses, onChange }: { cls: DofusClass; allClasses: DofusClass[]; onChange: (updated: DofusClass) => void }) {
   const [expanded, setExpanded] = useState(false);
@@ -155,33 +152,304 @@ function ClassEditor({ cls, allClasses, onChange }: { cls: DofusClass; allClasse
   );
 }
 
+// ─── Recommended Team Form ────────────────────────────────────────────────────
+
+const emptyRoles: TeamRoles = { tank: null, soutienPolyvalent: null, dpt: null, dpt2: null };
+
+function RecommendedTeamForm({
+  classes,
+  adminPassword,
+  initial,
+  onSave,
+  onCancel,
+}: {
+  classes: DofusClass[];
+  adminPassword: string;
+  initial?: { id: string; name: string; patch: string; roles: TeamRoles; comment: TeamComment };
+  onSave: () => void;
+  onCancel: () => void;
+}) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [patch, setPatch] = useState(initial?.patch ?? CURRENT_PATCH);
+  const [roles, setRoles] = useState<TeamRoles>(initial?.roles ?? emptyRoles);
+  const [comment, setComment] = useState<TeamComment>(initial?.comment ?? EMPTY_COMMENT);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const isComplete = ROLE_ORDER.every(r => roles[r] !== null);
+  const teamDetails = isComplete ? computeTeamDetails(roles, classes) : null;
+  const autoScore = teamDetails?.overall ?? 0;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isComplete || !name.trim()) { setError('Nom et 4 classes requis'); return; }
+    setSaving(true);
+    try {
+      if (initial) {
+        await apiUpdateRecommendedTeam(initial.id, roles, autoScore, patch, comment, name, adminPassword);
+      } else {
+        await apiCreateRecommendedTeam(roles, autoScore, patch, comment, name, adminPassword);
+      }
+      onSave();
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const selectStyle: React.CSSProperties = {
+    background: '#161b22', border: '1px solid #30363d', borderRadius: 6,
+    color: '#e6edf3', padding: '0.45rem 0.6rem', fontSize: '0.82rem', outline: 'none', width: '100%',
+  };
+
+  const textareaStyle: React.CSSProperties = {
+    background: '#161b22', border: '1px solid #30363d', borderRadius: 6,
+    color: '#e6edf3', padding: '0.5rem 0.7rem', fontSize: '0.8rem', outline: 'none',
+    width: '100%', resize: 'vertical', minHeight: 60, boxSizing: 'border-box',
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      {/* Name + Patch */}
+      <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ color: '#8b949e', fontSize: '0.72rem', display: 'block', marginBottom: 3 }}>Nom de l'équipe *</label>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Team Cra..."
+            style={{ ...selectStyle }}
+          />
+        </div>
+        <div style={{ width: 100 }}>
+          <label style={{ color: '#8b949e', fontSize: '0.72rem', display: 'block', marginBottom: 3 }}>Patch</label>
+          <select value={patch} onChange={e => setPatch(e.target.value)} style={selectStyle}>
+            {AVAILABLE_PATCHES.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </div>
+      </div>
+
+      {/* Roles */}
+      <div>
+        <div style={{ color: '#8b949e', fontSize: '0.72rem', fontWeight: 600, marginBottom: '0.4rem' }}>COMPOSITION (4 rôles)</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+          {ROLE_ORDER.map(role => (
+            <div key={role}>
+              <label style={{ color: '#8b949e', fontSize: '0.7rem', display: 'block', marginBottom: 2 }}>{ROLE_LABELS_SHORT[role]}</label>
+              <select
+                value={roles[role] ?? ''}
+                onChange={e => setRoles(prev => ({ ...prev, [role]: e.target.value || null }))}
+                style={selectStyle}
+              >
+                <option value="">— Sélectionner —</option>
+                {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+          ))}
+        </div>
+        {isComplete && (
+          <div style={{ marginTop: '0.4rem', color: '#d4a017', fontSize: '0.75rem' }}>
+            Score auto calculé : <strong>{(autoScore / 2).toFixed(1)} ★ / 5</strong>
+          </div>
+        )}
+      </div>
+
+      {/* Comment */}
+      <div>
+        <div style={{ color: '#8b949e', fontSize: '0.72rem', fontWeight: 600, marginBottom: '0.4rem' }}>COMMENTAIRE</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <textarea
+            value={comment.description}
+            onChange={e => setComment(prev => ({ ...prev, description: e.target.value }))}
+            placeholder="Description de la composition..."
+            style={textareaStyle}
+          />
+          <textarea
+            value={comment.strengths}
+            onChange={e => setComment(prev => ({ ...prev, strengths: e.target.value }))}
+            placeholder="Points forts..."
+            style={{ ...textareaStyle, minHeight: 48 }}
+          />
+          <textarea
+            value={comment.weaknesses}
+            onChange={e => setComment(prev => ({ ...prev, weaknesses: e.target.value }))}
+            placeholder="Points faibles..."
+            style={{ ...textareaStyle, minHeight: 48 }}
+          />
+        </div>
+      </div>
+
+      {error && <div style={{ color: '#ff6b6b', fontSize: '0.75rem' }}>{error}</div>}
+
+      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+        <button type="button" onClick={onCancel} className="dofus-btn-outline" style={{ fontSize: '0.8rem' }}>Annuler</button>
+        <button type="submit" className="dofus-btn" disabled={saving || !isComplete || !name.trim()} style={{ fontSize: '0.8rem' }}>
+          {saving ? 'Sauvegarde...' : initial ? '✓ Modifier' : '+ Créer'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// ─── Recommended Teams Section ────────────────────────────────────────────────
+
+function RecommendedTeamsSection({ classes, adminPassword, onRefresh }: {
+  classes: DofusClass[];
+  adminPassword: string;
+  onRefresh: () => void;
+}) {
+  const { teams } = useTeams();
+  const recommended = teams.filter(t => t.isRecommended === true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Supprimer cette équipe recommandée ?')) return;
+    setDeleting(id);
+    try {
+      await apiDeleteRecommendedTeam(id, adminPassword);
+      onRefresh();
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const handleSaved = () => {
+    setShowForm(false);
+    setEditingId(null);
+    onRefresh();
+  };
+
+  return (
+    <div style={{ marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div>
+          <div style={{ color: '#e6edf3', fontWeight: 700, fontSize: '1rem' }}>🏆 Équipes Recommandées</div>
+          <div style={{ color: '#8b949e', fontSize: '0.78rem' }}>{recommended.length} équipe{recommended.length > 1 ? 's' : ''} — visibles dans la Tier List</div>
+        </div>
+        {!showForm && !editingId && (
+          <button onClick={() => setShowForm(true)} className="dofus-btn" style={{ fontSize: '0.8rem' }}>
+            + Nouvelle équipe
+          </button>
+        )}
+      </div>
+
+      {/* New team form */}
+      {showForm && (
+        <div className="dofus-card" style={{ padding: '1rem', marginBottom: '0.75rem', border: '1px solid rgba(212,160,23,0.3)' }}>
+          <div style={{ color: '#d4a017', fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.88rem' }}>Nouvelle équipe recommandée</div>
+          <RecommendedTeamForm
+            classes={classes}
+            adminPassword={adminPassword}
+            onSave={handleSaved}
+            onCancel={() => setShowForm(false)}
+          />
+        </div>
+      )}
+
+      {/* Existing teams list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {recommended.map(team => (
+          <div key={team.id} className="dofus-card" style={{ padding: '0.75rem 1rem', border: '1px solid #30363d' }}>
+            {editingId === team.id ? (
+              <>
+                <div style={{ color: '#d4a017', fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.88rem' }}>Modifier : {team.name}</div>
+                <RecommendedTeamForm
+                  classes={classes}
+                  adminPassword={adminPassword}
+                  initial={{
+                    id: team.id,
+                    name: team.name ?? '',
+                    patch: team.patch,
+                    roles: team.roles,
+                    comment: team.comment,
+                  }}
+                  onSave={handleSaved}
+                  onCancel={() => setEditingId(null)}
+                />
+              </>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.2rem', flexShrink: 0 }}>
+                  {ROLE_ORDER.map(role => {
+                    const cls = classes.find(c => c.id === team.roles[role]);
+                    return cls ? <ClassLogo key={role} dofusClass={cls} size={30} /> : null;
+                  })}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <span style={{ color: '#e6edf3', fontWeight: 600, fontSize: '0.88rem' }}>{team.name ?? '—'}</span>
+                  <span style={{ color: '#8b949e', fontSize: '0.72rem', marginLeft: '0.5rem' }}>patch {team.patch} — {(team.autoScore / 2).toFixed(1)} ★ / 5</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
+                  <button
+                    onClick={() => setEditingId(team.id)}
+                    className="dofus-btn-outline"
+                    style={{ fontSize: '0.75rem', padding: '0.3rem 0.7rem' }}
+                  >
+                    ✏️ Modifier
+                  </button>
+                  <button
+                    onClick={() => handleDelete(team.id)}
+                    disabled={deleting === team.id}
+                    style={{
+                      background: 'rgba(255,107,107,0.1)', border: '1px solid rgba(255,107,107,0.3)',
+                      color: '#ff6b6b', borderRadius: 6, padding: '0.3rem 0.7rem',
+                      fontSize: '0.75rem', cursor: 'pointer',
+                    }}
+                  >
+                    {deleting === team.id ? '...' : '🗑️ Supprimer'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {recommended.length === 0 && !showForm && (
+          <div style={{ textAlign: 'center', padding: '1.5rem', color: '#8b949e', border: '1px dashed #30363d', borderRadius: 8, fontSize: '0.82rem' }}>
+            Aucune équipe recommandée. Créez-en une !
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main AdminPage ───────────────────────────────────────────────────────────
+
 export function AdminPage() {
   const { classes, setClasses, loading } = useClasses();
+  const { refresh } = useTeams();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [adminPassword, setAdminPwd] = useState('');
   const [saved, setSaved] = useState(false);
   const [newPwd, setNewPwd] = useState('');
   const [pwdMsg, setPwdMsg] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'classes' | 'recommended'>('recommended');
 
-  if (!loggedIn) return <AdminLogin onLogin={() => setLoggedIn(true)} />;
+  if (!loggedIn) return <AdminLogin onLogin={pwd => { setLoggedIn(true); setAdminPwd(pwd); }} />;
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem', color: '#8b949e' }}>Chargement...</div>;
 
-  const handleClassChange = (updated: DofusClass) => {
+  const handleClassChange = async (updated: DofusClass) => {
     const next = classes.map(c => c.id === updated.id ? updated : c);
     setClasses(next);
-    saveClassesToStorage(next);
     setSaved(false);
+    await saveClassesToStorage(next, adminPassword);
   };
 
-  const handleSave = () => {
-    saveClassesToStorage(classes);
+  const handleSave = async () => {
+    await saveClassesToStorage(classes, adminPassword);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const handleChangePwd = () => {
+  const handleChangePwd = async () => {
     if (newPwd.length < 4) { setPwdMsg('Mot de passe trop court (min. 4 caractères)'); return; }
-    setAdminPassword(newPwd);
+    await setAdminPassword(adminPassword, newPwd);
+    setAdminPwd(newPwd);
     setPwdMsg('Mot de passe mis à jour !');
     setNewPwd('');
     setTimeout(() => setPwdMsg(''), 3000);
@@ -189,46 +457,81 @@ export function AdminPage() {
 
   const filtered = searchQuery ? classes.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())) : classes;
 
+  const tabStyle = (active: boolean): React.CSSProperties => ({
+    padding: '0.5rem 1.2rem',
+    background: active ? 'rgba(212,160,23,0.15)' : 'transparent',
+    border: `1px solid ${active ? 'rgba(212,160,23,0.4)' : '#30363d'}`,
+    borderRadius: 6,
+    color: active ? '#d4a017' : '#8b949e',
+    cursor: 'pointer',
+    fontSize: '0.82rem',
+    fontWeight: active ? 700 : 400,
+  });
+
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <h1 style={{ color: '#d4a017', fontWeight: 800, fontSize: '1.5rem', margin: 0 }}>⚙️ Administration</h1>
-          <p style={{ color: '#8b949e', margin: '0.25rem 0 0', fontSize: '0.9rem' }}>Configurez les statistiques et incompatibilités de chaque classe.</p>
+          <p style={{ color: '#8b949e', margin: '0.25rem 0 0', fontSize: '0.9rem' }}>Gérez les classes et les équipes recommandées.</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          {saved && <span style={{ color: '#1dd1a1', fontSize: '0.85rem' }}>✓ Sauvegardé</span>}
-          <button onClick={handleSave} className="dofus-btn-outline">💾 Sauvegarder</button>
-          <button onClick={() => exportClassesJson(classes)} className="dofus-btn">⬇️ Exporter JSON</button>
-        </div>
+        {activeTab === 'classes' && (
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            {saved && <span style={{ color: '#1dd1a1', fontSize: '0.85rem' }}>✓ Sauvegardé</span>}
+            <button onClick={handleSave} className="dofus-btn-outline">💾 Sauvegarder</button>
+            <button onClick={() => exportClassesJson(classes)} className="dofus-btn">⬇️ Exporter JSON</button>
+          </div>
+        )}
       </div>
 
-      <div style={{
-        background: 'rgba(77,166,255,0.08)', border: '1px solid rgba(77,166,255,0.25)',
-        borderRadius: 10, padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.8rem', color: '#4da6ff',
-      }}>
-        ℹ️ <strong>Déployer les changements :</strong> Cliquez sur "Exporter JSON", puis remplacez{' '}
-        <code>public/data/classes.json</code> dans votre dépôt GitHub et commitez.
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+        <button style={tabStyle(activeTab === 'recommended')} onClick={() => setActiveTab('recommended')}>
+          🏆 Équipes recommandées
+        </button>
+        <button style={tabStyle(activeTab === 'classes')} onClick={() => setActiveTab('classes')}>
+          ⚔️ Classes
+        </button>
       </div>
 
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-        placeholder="🔍 Rechercher une classe..."
-        style={{
-          width: '100%', background: '#1c2128', border: '1px solid #30363d', borderRadius: 8,
-          color: '#e6edf3', padding: '0.65rem 0.9rem', fontSize: '0.9rem', outline: 'none',
-          marginBottom: '1rem', boxSizing: 'border-box',
-        }}
-      />
+      {/* Tab: Recommended Teams */}
+      {activeTab === 'recommended' && (
+        <RecommendedTeamsSection classes={classes} adminPassword={adminPassword} onRefresh={refresh} />
+      )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
-        {filtered.map(cls => (
-          <ClassEditor key={cls.id} cls={cls} allClasses={classes} onChange={handleClassChange} />
-        ))}
-      </div>
+      {/* Tab: Classes */}
+      {activeTab === 'classes' && (
+        <>
+          <div style={{
+            background: 'rgba(77,166,255,0.08)', border: '1px solid rgba(77,166,255,0.25)',
+            borderRadius: 10, padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.8rem', color: '#4da6ff',
+          }}>
+            ℹ️ <strong>Déployer les changements :</strong> Cliquez sur "Exporter JSON", puis remplacez{' '}
+            <code>public/data/classes.json</code> dans votre dépôt GitHub et commitez.
+          </div>
 
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="🔍 Rechercher une classe..."
+            style={{
+              width: '100%', background: '#1c2128', border: '1px solid #30363d', borderRadius: 8,
+              color: '#e6edf3', padding: '0.65rem 0.9rem', fontSize: '0.9rem', outline: 'none',
+              marginBottom: '1rem', boxSizing: 'border-box',
+            }}
+          />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
+            {filtered.map(cls => (
+              <ClassEditor key={cls.id} cls={cls} allClasses={classes} onChange={handleClassChange} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Change password */}
       <div className="dofus-card" style={{ padding: '1rem' }}>
         <div style={{ color: '#8b949e', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.75rem' }}>CHANGER LE MOT DE PASSE ADMIN</div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>

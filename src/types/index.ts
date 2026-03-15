@@ -46,6 +46,7 @@ export interface SavedTeam {
   userRatings: number[];
   createdAt: number;
   name?: string;
+  isRecommended?: boolean;
 }
 
 export type Tier = 'S' | 'A' | 'B' | 'C';

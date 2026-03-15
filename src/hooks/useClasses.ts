@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { DofusClass } from '../types';
-import { loadClasses, getClassesOverride } from '../lib/storage';
+import { loadClasses } from '../lib/storage';
 
 export function useClasses() {
   const [classes, setClasses] = useState<DofusClass[]>([]);
@@ -8,14 +8,6 @@ export function useClasses() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Prefer admin override if set
-    const override = getClassesOverride();
-    if (override) {
-      setClasses(override);
-      setLoading(false);
-      return;
-    }
-
     loadClasses()
       .then(data => {
         setClasses(data);

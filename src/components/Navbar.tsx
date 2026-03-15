@@ -16,6 +16,7 @@ export function Navbar() {
             { to: '/', label: '🛠️ Builder' },
             { to: '/tierlist', label: '🏆 Tier List' },
             { to: '/classement', label: '📊 Classement' },
+            { to: '/classes', label: '🎭 Classes' },
             { to: '/admin', label: '⚙️ Admin' },
           ].map(({ to, label }) => (
             <NavLink

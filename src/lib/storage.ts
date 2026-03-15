@@ -38,9 +38,9 @@ export async function loadClasses(): Promise<DofusClass[]> {
   return cachedClasses;
 }
 
-export async function saveClassesToStorage(classes: DofusClass[], adminPassword: string): Promise<void> {
+export async function saveClassesToStorage(classes: DofusClass[], token: string): Promise<void> {
   cachedClasses = classes;
-  await apiSaveClasses(classes, adminPassword);
+  await apiSaveClasses(classes, token);
 }
 
 export async function getClassesOverride(): Promise<DofusClass[] | null> {
@@ -94,31 +94,31 @@ export async function deleteTeam(teamId: string): Promise<void> {
 
 // ─── Admin password ───────────────────────────────────────────────────────────
 
-export async function checkAdminPassword(pwd: string): Promise<boolean> {
-  return apiVerifyAdmin(pwd);
+export async function checkAdminPassword(token: string): Promise<boolean> {
+  return apiVerifyAdmin(token);
 }
 
-export async function setAdminPassword(currentPwd: string, newPwd: string): Promise<void> {
-  await apiChangePassword(currentPwd, newPwd);
+export async function setAdminPassword(token: string, newPwd: string): Promise<void> {
+  await apiChangePassword(token, newPwd);
 }
 
 // ─── Class Ratings ─────────────────────────────────────────────────────────────
 
-export async function loadClassCommunityStats(): Promise<{ averages: Record<string, ClassStats>; counts: Record<string, number> }> {
+export async function loadClassCommunityStats(patch?: string): Promise<{ averages: Record<string, ClassStats>; counts: Record<string, number> }> {
   try {
-    return await apiGetClassCommunityStats();
+    return await apiGetClassCommunityStats(patch);
   } catch {
     return { averages: {}, counts: {} };
   }
 }
 
-export async function rateClass(classId: string, stats: ClassStats): Promise<void> {
-  await apiRateClass(classId, stats);
-  localStorage.setItem(`rated_class_${classId}`, '1');
+export async function rateClass(classId: string, stats: ClassStats, patch: string = CURRENT_PATCH): Promise<void> {
+  await apiRateClass(classId, stats, patch);
+  localStorage.setItem(`rated_class_${classId}_${patch}`, '1');
 }
 
-export function hasRatedClass(classId: string): boolean {
-  return !!localStorage.getItem(`rated_class_${classId}`);
+export function hasRatedClass(classId: string, patch: string = CURRENT_PATCH): boolean {
+  return !!localStorage.getItem(`rated_class_${classId}_${patch}`);
 }
 
 // ─── Migration: localStorage → SQLite ────────────────────────────────────────

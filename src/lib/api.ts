@@ -1,4 +1,4 @@
-import type { SavedTeam, DofusClass, TeamRoles, TeamComment, ClassStats } from '../types';
+import type { SavedTeam, DofusClass, TeamRoles, TeamComment, ClassStats, AppUser } from '../types';
 
 const BASE = '/api';
 
@@ -8,6 +8,32 @@ async function json<T>(res: Response): Promise<T> {
     throw new Error((err as { error: string }).error ?? res.statusText);
   }
   return res.json() as Promise<T>;
+}
+
+function authHeaders(token: string) {
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+export async function apiRegister(email: string, password: string, username: string): Promise<{ token: string; user: AppUser }> {
+  return json(await fetch(`${BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, username }),
+  }));
+}
+
+export async function apiLogin(email: string, password: string): Promise<{ token: string; user: AppUser }> {
+  return json(await fetch(`${BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  }));
+}
+
+export async function apiGetMe(token: string): Promise<{ user: AppUser }> {
+  return json(await fetch(`${BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } }));
 }
 
 // ─── Teams ────────────────────────────────────────────────────────────────────
@@ -49,30 +75,30 @@ export async function apiGetClasses(): Promise<DofusClass[] | null> {
   return json(await fetch(`${BASE}/classes`));
 }
 
-export async function apiSaveClasses(classes: DofusClass[], adminPassword: string): Promise<void> {
+export async function apiSaveClasses(classes: DofusClass[], token: string): Promise<void> {
   await json(await fetch(`${BASE}/admin/classes`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ classes, adminPassword }),
+    headers: authHeaders(token),
+    body: JSON.stringify(classes),
   }));
 }
 
 // ─── Admin ────────────────────────────────────────────────────────────────────
 
-export async function apiVerifyAdmin(password: string): Promise<boolean> {
+export async function apiVerifyAdmin(token: string): Promise<boolean> {
   const res: { ok: boolean } = await json(await fetch(`${BASE}/admin/verify`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ adminPassword: password }),
+    headers: authHeaders(token),
+    body: JSON.stringify({}),
   }));
   return res.ok;
 }
 
-export async function apiChangePassword(adminPassword: string, newPassword: string): Promise<void> {
+export async function apiChangePassword(token: string, newPassword: string): Promise<void> {
   await json(await fetch(`${BASE}/admin/password`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ adminPassword, newPassword }),
+    headers: authHeaders(token),
+    body: JSON.stringify({ newPassword }),
   }));
 }
 
@@ -82,12 +108,12 @@ export async function apiCreateRecommendedTeam(
   patch: string,
   comment: TeamComment,
   name: string,
-  adminPassword: string,
+  token: string,
 ): Promise<SavedTeam> {
   return json(await fetch(`${BASE}/admin/teams`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ roles, autoScore, patch, comment, name, adminPassword }),
+    headers: authHeaders(token),
+    body: JSON.stringify({ roles, autoScore, patch, comment, name }),
   }));
 }
 
@@ -98,33 +124,54 @@ export async function apiUpdateRecommendedTeam(
   patch: string,
   comment: TeamComment,
   name: string,
-  adminPassword: string,
+  token: string,
 ): Promise<SavedTeam> {
   return json(await fetch(`${BASE}/admin/teams/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ roles, autoScore, patch, comment, name, adminPassword }),
+    headers: authHeaders(token),
+    body: JSON.stringify({ roles, autoScore, patch, comment, name }),
   }));
 }
 
-export async function apiDeleteRecommendedTeam(id: string, adminPassword: string): Promise<void> {
+export async function apiDeleteRecommendedTeam(id: string, token: string): Promise<void> {
   await json(await fetch(`${BASE}/admin/teams/${id}`, {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-    body: JSON.stringify({ adminPassword }),
+    headers: authHeaders(token),
+  }));
+}
+
+// ─── User management ─────────────────────────────────────────────────────────
+
+export async function apiGetUsers(token: string): Promise<AppUser[]> {
+  return json(await fetch(`${BASE}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }));
+}
+
+export async function apiSetUserRole(id: string, role: 'user' | 'admin', token: string): Promise<void> {
+  await json(await fetch(`${BASE}/admin/users/${id}/role`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ role }),
+  }));
+}
+
+export async function apiDeleteUser(id: string, token: string): Promise<void> {
+  await json(await fetch(`${BASE}/admin/users/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
   }));
 }
 
 // ─── Class Ratings ─────────────────────────────────────────────────────────────
 
-export async function apiGetClassCommunityStats(): Promise<{ averages: Record<string, ClassStats>; counts: Record<string, number> }> {
-  return json(await fetch(`${BASE}/class-ratings`));
+export async function apiGetClassCommunityStats(patch?: string): Promise<{ averages: Record<string, ClassStats>; counts: Record<string, number> }> {
+  const url = patch ? `${BASE}/class-ratings?patch=${encodeURIComponent(patch)}` : `${BASE}/class-ratings`;
+  return json(await fetch(url));
 }
 
-export async function apiRateClass(classId: string, stats: ClassStats): Promise<void> {
+export async function apiRateClass(classId: string, stats: ClassStats, patch: string): Promise<void> {
   await json(await fetch(`${BASE}/class-ratings/${classId}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stats }),
+    body: JSON.stringify({ stats, patch }),
   }));
 }

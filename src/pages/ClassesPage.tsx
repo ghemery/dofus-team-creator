@@ -2,26 +2,27 @@ import { useState, useEffect } from 'react';
 import { useClasses } from '../hooks/useClasses';
 import { loadClassCommunityStats } from '../lib/storage';
 import { computePerfectRole } from '../lib/scoring';
-import { ClassStats, ROLE_LABELS_SHORT, ROLE_COLORS } from '../types';
+import { ClassStats, ROLE_LABELS_SHORT, ROLE_COLORS, AVAILABLE_PATCHES, CURRENT_PATCH } from '../types';
 import { ClassLogo } from '../components/ClassLogo';
 import { ClassRatingModal } from '../components/ClassRatingModal';
 
 export function ClassesPage() {
   const { classes, loading } = useClasses();
+  const [selectedPatch, setSelectedPatch] = useState(CURRENT_PATCH);
   const [communityAverages, setCommunityAverages] = useState<Record<string, ClassStats>>({});
   const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
   const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const loadStats = async () => {
-    const { averages, counts } = await loadClassCommunityStats();
+  const loadStats = async (patch?: string) => {
+    const { averages, counts } = await loadClassCommunityStats(patch);
     setCommunityAverages(averages);
     setVoteCounts(counts);
   };
 
   useEffect(() => {
-    loadStats();
-  }, []);
+    loadStats(selectedPatch);
+  }, [selectedPatch]);
 
   if (loading) {
     return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem', color: '#8b949e' }}>Chargement...</div>;
@@ -43,17 +44,22 @@ export function ClassesPage() {
             Notez chaque classe selon votre expérience — la moyenne communautaire détermine son rôle parfait.
           </p>
         </div>
-        <input
-          type="text"
-          placeholder="Rechercher une classe..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          style={{
-            background: '#161b22', border: '1px solid #30363d', borderRadius: 8,
-            color: '#e6edf3', padding: '0.5rem 0.9rem', fontSize: '0.85rem',
-            outline: 'none', width: 220,
-          }}
-        />
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <select
+            value={selectedPatch}
+            onChange={e => setSelectedPatch(e.target.value)}
+            style={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 8, color: '#e6edf3', padding: '0.5rem 0.7rem', fontSize: '0.85rem', outline: 'none' }}
+          >
+            {AVAILABLE_PATCHES.map(p => <option key={p} value={p}>Patch {p}</option>)}
+          </select>
+          <input
+            type="text"
+            placeholder="Rechercher une classe..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 8, color: '#e6edf3', padding: '0.5rem 0.9rem', fontSize: '0.85rem', outline: 'none', width: 200 }}
+          />
+        </div>
       </div>
 
       {/* Grid */}
@@ -146,7 +152,8 @@ export function ClassesPage() {
           communityStats={communityAverages[selectedClass.id] ?? null}
           voteCount={voteCounts[selectedClass.id] ?? 0}
           onClose={() => setSelectedClassId(null)}
-          onVoted={() => loadStats()}
+          onVoted={(patch) => loadStats(patch)}
+          selectedPatch={selectedPatch}
         />
       )}
     </div>

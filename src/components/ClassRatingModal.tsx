@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { DofusClass, ClassStats, ROLE_ORDER, ROLE_LABELS, ROLE_COLORS, STAT_LABELS, STAT_ICONS } from '../types';
+import { DofusClass, ClassStats, ROLE_ORDER, ROLE_LABELS, ROLE_COLORS, STAT_LABELS, STAT_ICONS, AVAILABLE_PATCHES, CURRENT_PATCH } from '../types';
 import { computeRoleScore, computePerfectRole } from '../lib/scoring';
 import { rateClass, hasRatedClass } from '../lib/storage';
 import { ClassLogo } from './ClassLogo';
@@ -10,15 +10,17 @@ interface ClassRatingModalProps {
   communityStats: ClassStats | null;
   voteCount: number;
   onClose: () => void;
-  onVoted: () => void;
+  onVoted: (patch: string) => void;
+  selectedPatch?: string;
 }
 
-export function ClassRatingModal({ cls, communityStats, voteCount, onClose, onVoted }: ClassRatingModalProps) {
+export function ClassRatingModal({ cls, communityStats, voteCount, onClose, onVoted, selectedPatch }: ClassRatingModalProps) {
+  const [patch, setPatch] = useState(selectedPatch ?? CURRENT_PATCH);
   const defaultStats = communityStats ?? cls.stats;
   const [draft, setDraft] = useState<ClassStats>({ ...defaultStats });
   const [saving, setSaving] = useState(false);
   const [voted, setVoted] = useState(false);
-  const alreadyVoted = hasRatedClass(cls.id);
+  const alreadyVoted = hasRatedClass(cls.id, patch);
 
   // stats stored 0–10, stars displayed 0–5 (×2 to store, ÷2 to display)
   const updateStat = (key: keyof ClassStats, stars: number) =>
@@ -30,9 +32,9 @@ export function ClassRatingModal({ cls, communityStats, voteCount, onClose, onVo
   const handleVote = async () => {
     setSaving(true);
     try {
-      await rateClass(cls.id, draft);
+      await rateClass(cls.id, draft, patch);
       setVoted(true);
-      onVoted();
+      onVoted(patch);
     } finally {
       setSaving(false);
     }
@@ -75,10 +77,19 @@ export function ClassRatingModal({ cls, communityStats, voteCount, onClose, onVo
             <ClassLogo dofusClass={cls} size={44} />
             <div>
               <div style={{ color: cls.color, fontWeight: 800, fontSize: '1.15rem' }}>{cls.name}</div>
-              <div style={{ color: '#8b949e', fontSize: '0.75rem' }}>
-                {voteCount > 0
-                  ? `${voteCount} vote${voteCount > 1 ? 's' : ''} communautaire${voteCount > 1 ? 's' : ''}`
-                  : 'Aucun vote pour le moment — statistiques officielles affichées'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: 3 }}>
+                <span style={{ color: '#8b949e', fontSize: '0.75rem' }}>
+                  {voteCount > 0
+                    ? `${voteCount} vote${voteCount > 1 ? 's' : ''}`
+                    : 'Aucun vote — stats officielles'}
+                </span>
+                <select
+                  value={patch}
+                  onChange={e => setPatch(e.target.value)}
+                  style={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 4, color: '#e6edf3', padding: '0.15rem 0.4rem', fontSize: '0.72rem', outline: 'none' }}
+                >
+                  {AVAILABLE_PATCHES.map(p => <option key={p} value={p}>Patch {p}</option>)}
+                </select>
               </div>
             </div>
           </div>

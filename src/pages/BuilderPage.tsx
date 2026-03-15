@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { TeamRoles, RoleType, ROLE_ORDER, ROLE_LABELS, ROLE_LABELS_SHORT, AVAILABLE_PATCHES, CURRENT_PATCH, TeamComment, EMPTY_COMMENT, STAT_LABELS, STAT_ICONS } from '../types';
 import { useClasses } from '../hooks/useClasses';
 import { useTeams } from '../hooks/useTeams';
+import { useCommunityStats } from '../hooks/useCommunityStats';
 import { computeTeamDetails, getDamageVolumeStyle, getDamageLevelStyle } from '../lib/scoring';
 import { RoleSlot } from '../components/RoleSlot';
 import { ScoreBar, StatGrid } from '../components/ScoreBar';
 import { ClassLogo } from '../components/ClassLogo';
+import { StarRating } from '../components/StarRating';
 
 const defaultRoles: TeamRoles = {
   tank: null,
@@ -18,6 +20,7 @@ const defaultRoles: TeamRoles = {
 export function BuilderPage() {
   const { classes, loading } = useClasses();
   const { addTeam } = useTeams();
+  const { averages: communityAverages } = useCommunityStats(CURRENT_PATCH);
   const navigate = useNavigate();
 
   const [roles, setRoles] = useState<TeamRoles>(defaultRoles);
@@ -279,6 +282,59 @@ export function BuilderPage() {
               })}
             </div>
           </div>
+
+          {/* Community rating preview */}
+          {ROLE_ORDER.some(r => roles[r] !== null) && (
+            <div className="dofus-card" style={{ padding: '1rem' }}>
+              <div style={{ color: '#8b949e', fontSize: '0.8rem', marginBottom: '0.75rem', fontWeight: 600 }}>NOTATION COMMUNAUTAIRE</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {ROLE_ORDER.map(role => {
+                  const cls = roles[role] ? classes.find(c => c.id === roles[role]) : null;
+                  if (!cls) return null;
+                  const stats = communityAverages[cls.id];
+                  const avgScore = stats
+                    ? Object.values(stats).reduce((s, v) => s + v, 0) / Object.values(stats).length / 2
+                    : null;
+                  return (
+                    <div key={role} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <ClassLogo dofusClass={cls} size={28} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: cls.color, fontSize: '0.72rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cls.name}</div>
+                        {avgScore !== null ? (
+                          <StarRating allowHalf value={avgScore} readonly size={12} showValue={false} />
+                        ) : (
+                          <span style={{ color: '#444c56', fontSize: '0.65rem' }}>Pas encore noté</span>
+                        )}
+                      </div>
+                      {avgScore !== null && (
+                        <span style={{ color: '#d4a017', fontSize: '0.72rem', fontWeight: 700, flexShrink: 0 }}>
+                          {avgScore.toFixed(1)}★
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              {ROLE_ORDER.filter(r => roles[r] && communityAverages[roles[r]!]).length >= 2 && (() => {
+                const scores = ROLE_ORDER
+                  .filter(r => roles[r] && communityAverages[roles[r]!])
+                  .map(r => Object.values(communityAverages[roles[r]!]).reduce((s, v) => s + v, 0) / 12 / 2);
+                const teamAvg = scores.reduce((s, v) => s + v, 0) / scores.length;
+                return (
+                  <>
+                    <div style={{ height: 1, background: '#30363d', margin: '0.5rem 0' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8b949e', fontSize: '0.72rem' }}>Moyenne équipe</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <StarRating allowHalf value={teamAvg} readonly size={14} showValue={false} />
+                        <span style={{ color: '#d4a017', fontSize: '0.72rem', fontWeight: 700 }}>{teamAvg.toFixed(1)}★</span>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
 
           {/* Class detail */}
           {detailClass && (

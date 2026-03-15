@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DofusClass, RoleType, ROLE_LABELS, ROLE_COLORS } from '../types';
 import { ClassLogo } from './ClassLogo';
 import { ClassGrid } from './ClassGrid';
@@ -12,17 +12,30 @@ interface RoleSlotProps {
 
 export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotProps) {
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const selectedClass = classes.find(c => c.id === selectedClassId) ?? null;
   const roleColor = ROLE_COLORS[role];
   const roleLabel = ROLE_LABELS[role];
+
+  // Auto-focus search input when picker opens
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => searchRef.current?.focus(), 50);
+    } else {
+      setSearchQuery('');
+    }
+  }, [open]);
+
+  const filteredClasses = classes
+    .filter(c => !searchQuery || c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <div style={{ width: 10, height: 10, borderRadius: '50%', background: roleColor, flexShrink: 0 }} />
-        <span style={{ color: roleColor, fontWeight: 700, fontSize: '0.85rem' }}>
-          {roleLabel}
-        </span>
+        <span style={{ color: roleColor, fontWeight: 700, fontSize: '0.85rem' }}>{roleLabel}</span>
       </div>
 
       <div
@@ -76,14 +89,40 @@ export function RoleSlot({ role, selectedClassId, classes, onSelect }: RoleSlotP
           boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           zIndex: 10,
         }}>
-          <div style={{ padding: '0.75rem 0.75rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: '#8b949e', fontSize: '0.8rem' }}>Sélectionner une classe</span>
+          <div style={{ padding: '0.75rem 0.75rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+            <input
+              ref={searchRef}
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="🔍 Rechercher..."
+              onClick={e => e.stopPropagation()}
+              style={{
+                flex: 1,
+                background: '#161b22',
+                border: '1px solid #30363d',
+                borderRadius: 6,
+                color: '#e6edf3',
+                padding: '0.4rem 0.7rem',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            />
             <button
               onClick={() => setOpen(false)}
-              style={{ background: 'transparent', border: 'none', color: '#8b949e', cursor: 'pointer', fontSize: '1rem', padding: '0 0.25rem' }}
+              style={{ background: 'transparent', border: 'none', color: '#8b949e', cursor: 'pointer', fontSize: '1rem', padding: '0 0.25rem', flexShrink: 0 }}
             >✕</button>
           </div>
-          <ClassGrid classes={classes} selectedId={selectedClassId} onSelect={id => { onSelect(id); setOpen(false); }} />
+          <ClassGrid
+            classes={filteredClasses}
+            selectedId={selectedClassId}
+            onSelect={id => { onSelect(id); setOpen(false); }}
+          />
+          {filteredClasses.length === 0 && (
+            <div style={{ padding: '1rem', textAlign: 'center', color: '#8b949e', fontSize: '0.82rem' }}>
+              Aucune classe trouvée
+            </div>
+          )}
         </div>
       )}
     </div>

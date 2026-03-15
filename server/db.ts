@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -46,11 +47,38 @@ db.exec(`
     stats      TEXT NOT NULL,
     created_at INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS users (
+    id         TEXT PRIMARY KEY,
+    email      TEXT NOT NULL UNIQUE,
+    username   TEXT NOT NULL,
+    password   TEXT NOT NULL,
+    role       TEXT NOT NULL DEFAULT 'user',
+    created_at INTEGER NOT NULL
+  );
 `);
+
+// ─── Migrations ───────────────────────────────────────────────────────────────
+
+// Add patch column to class_ratings (migration for existing DBs)
+try {
+  db.exec(`ALTER TABLE class_ratings ADD COLUMN patch TEXT NOT NULL DEFAULT '3.5'`);
+} catch { /* column already exists */ }
 
 // ─── Seed settings ────────────────────────────────────────────────────────────
 
 db.prepare(`INSERT OR IGNORE INTO settings (key, value) VALUES ('admin_password', 'admin1234')`).run();
+
+// ─── Seed admin user ──────────────────────────────────────────────────────────
+
+const adminCount = (db.prepare(`SELECT COUNT(*) as c FROM users WHERE role = 'admin'`).get() as { c: number }).c;
+if (adminCount === 0) {
+  const existingPwd = (db.prepare(`SELECT value FROM settings WHERE key='admin_password'`).get() as { value: string } | undefined)?.value ?? 'admin1234';
+  const hash = bcrypt.hashSync(existingPwd, 10);
+  db.prepare(`INSERT OR IGNORE INTO users (id, email, username, password, role, created_at) VALUES (?, ?, ?, ?, ?, ?)`)
+    .run('admin_seed', 'admin@local', 'Admin', hash, 'admin', Date.now());
+  console.log('[db] Seeded admin user (email: admin@local)');
+}
 
 // ─── Seed default recommended teams ──────────────────────────────────────────
 

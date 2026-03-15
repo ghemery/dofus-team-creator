@@ -13,6 +13,22 @@ export interface ClassStats {
   tankiness: number;
 }
 
+export type PreferredRole = 'tank' | 'soutien' | 'dpt' | 'hybride';
+
+export const PREFERRED_ROLE_EMOJI: Record<PreferredRole, string> = {
+  tank: '🛡️',
+  soutien: '💚',
+  dpt: '⚔️',
+  hybride: '🔀',
+};
+
+export const PREFERRED_ROLE_COLORS: Record<PreferredRole, string> = {
+  tank: '#48dbfb',
+  soutien: '#1dd1a1',
+  dpt: '#ff6b6b',
+  hybride: '#ff9f43',
+};
+
 export interface DofusClass {
   id: string;
   name: string;
@@ -20,6 +36,14 @@ export interface DofusClass {
   color: string;
   incompatibleWith: string[];
   stats: ClassStats;
+  preferredRoles?: PreferredRole[];
+}
+
+export interface AppUser {
+  id: string;
+  email: string;
+  username: string;
+  role: 'user' | 'admin';
 }
 
 export type RoleType = 'tank' | 'soutienPolyvalent' | 'dpt' | 'dpt2';

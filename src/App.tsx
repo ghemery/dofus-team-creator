@@ -5,10 +5,13 @@ import { TierListPage } from './pages/TierListPage';
 import { RankingPage } from './pages/RankingPage';
 import { AdminPage } from './pages/AdminPage';
 import { ClassesPage } from './pages/ClassesPage';
+import { LoginPage } from './pages/LoginPage';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <AuthProvider>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
         <main style={{ flex: 1, paddingBottom: '3rem' }}>
@@ -18,6 +21,7 @@ function App() {
             <Route path="/classement" element={<RankingPage />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </main>
         <footer
@@ -33,6 +37,7 @@ function App() {
           Dofus Team Builder — Données sauvegardées localement dans votre navigateur
         </footer>
       </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
